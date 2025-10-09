@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Panel - ViviGo</title>
+    <title>Mi Panel - CloudHouse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
                 <div class="logo-icon">
                     <i class="fa-solid fa-house-chimney logo-house"></i>
                 </div>
-                <span class="logo-text">ViviGo</span>
+                <span class="logo-text">CloudHouse</span>
             </a>
             <nav class="main-nav">
                 <ul>
@@ -37,14 +37,15 @@
             <aside class="dashboard-nav">
                 <div class="user-profile-summary">
                     <img src="https://placehold.co/80x80/3f51b5/fff?text=DP" alt="Avatar de usuario">
-                    <h3>David Alfonso Posso Cano</h3>
+                    <h3 id="userName">Cargando...</h3>
                     <p>Miembro desde 2024</p>
                 </div>
                 <ul>
-                    <li class="active"><a href="#"><i class="fa-solid fa-briefcase"></i> Mis Reservas</a></li>
-                    <li><a href="#"><i class="fa-solid fa-user"></i> Mi Perfil</a></li>
-                    <li><a href="#"><i class="fa-solid fa-heart"></i> Favoritos</a></li>
-                    <li><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
+                    <li class="active"><a href="booking.html"><i class="fa-solid fa-briefcase"></i> Mis Reservas</a></li>
+                    <li><a href="profile_edit.html"><i class="fa-solid fa-user"></i> Mi Perfil</a></li>
+                    <li><a href="#" onclick="showFavorites()"><i class="fa-solid fa-heart"></i> Favoritos</a></li>
+                    <li id="hostAccommodationsLink" style="display: none;"><a href="host_accommodations.html"><i class="fa-solid fa-home"></i> Mis Alojamientos</a></li>
+                    <li><a href="#" onclick="auth.logout()"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
                 </ul>
             </aside>
 
@@ -112,14 +113,313 @@
     <footer class="main-footer">
         <div class="container">
             <div class="footer-content">
-                 <div class="footer-section"><h4>ViviGo</h4><ul><li><a href="#">Sobre Nosotros</a></li><li><a href="#">Prensa</a></li><li><a href="#">Carreras</a></li><li><a href="#">Políticas</a></li></ul></div>
+                 <div class="footer-section"><h4>CloudHouse</h4><ul><li><a href="#">Sobre Nosotros</a></li><li><a href="#">Prensa</a></li><li><a href="#">Carreras</a></li><li><a href="#">Políticas</a></li></ul></div>
                 <div class="footer-section"><h4>Descubre</h4><ul><li><a href="#">Confianza y Seguridad</a></li><li><a href="#">Créditos de Viaje</a></li><li><a href="#">Ideas para Viajes</a></li></ul></div>
                 <div class="footer-section"><h4>Anfitriones</h4><ul><li><a href="#">¿Por qué ser anfitrión?</a></li><li><a href="#">Hospitalidad</a></li><li><a href="#">Centro de la Comunidad</a></li></ul></div>
                 <div class="footer-section social-media"><h4>Síguenos</h4><a href="#"><i class="fa-brands fa-facebook"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div>
             </div>
-            <div class="footer-bottom"><p>&copy; 2025 ViviGo. Todos los derechos reservados.</p></div>
+            <div class="footer-bottom"><p>&copy; 2025 CloudHouse. Todos los derechos reservados.</p></div>
         </div>
     </footer>
+
+
+    <script src="auth.js"></script>
+    <script>
+        // AUTENTICACIÓN Y NAVEGACIÓN DINÁMICA
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando página de reservas...');
+
+            // Verificar autenticación
+            if (!auth.isAuthenticated() || auth.isTokenExpired()) {
+                console.log('Usuario no autenticado, redirigiendo a login...');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Verificar autenticación y actualizar UI
+            updateNavigation();
+
+            // Cargar reservas
+            loadReservations();
+        });
+
+        function updateNavigation() {
+            const mainNav = document.querySelector('.main-nav ul');
+            const user = auth.getUser();
+            const initials = getInitials(user.name);
+
+            // Actualizar nombre en el sidebar
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement) {
+                userNameElement.textContent = user.name;
+            }
+
+            // Mostrar/ocultar link de anfitrión
+            const hostLink = document.getElementById('hostAccommodationsLink');
+            if (hostLink) {
+                hostLink.style.display = auth.isHost() ? 'block' : 'none';
+            }
+
+            mainNav.innerHTML = `
+                <li><a href="#" class="user-welcome">¡Hola, ${user.name}!</a></li>
+                <li>
+                    <div class="user-avatar" onclick="toggleUserMenu()">
+                        <span class="avatar-initials">${initials}</span>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#" onclick="editProfile()">
+                                <i class="fa-solid fa-user"></i>
+                                Editar Perfil
+                            </a>
+                            <a href="#" onclick="auth.logout()">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Cerrar Sesión
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            `;
+        }
+
+        // Función para extraer iniciales del nombre
+        function getInitials(name) {
+            return name.split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        }
+
+        // Función para editar perfil
+        function editProfile() {
+            // Cerrar el menú dropdown
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+
+            // Redirigir a la página de edición de perfil
+            window.location.href = 'profile_edit.html';
+        }
+
+        // Función para mostrar favoritos (placeholder)
+        function showFavorites() {
+            alert('Funcionalidad de favoritos se implementará próximamente');
+        }
+
+
+        // Cerrar menú al hacer clic fuera de él
+        document.addEventListener('click', function(event) {
+            const avatar = document.querySelector('.user-avatar');
+            const dropdown = document.getElementById('userDropdown');
+
+            if (avatar && dropdown && !avatar.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Función para cargar reservas
+        async function loadReservations() {
+            try {
+                // Mostrar loading
+                showLoadingState();
+
+                // Cargar reservas activas (PENDIENTE y CONFIRMADA)
+                await loadActiveReservations();
+
+                // Cargar reservas pasadas
+                await loadReservationsByStatus('COMPLETADA', 'pasadas');
+
+                // Cargar reservas canceladas
+                await loadReservationsByStatus('CANCELADA', 'canceladas');
+
+            } catch (error) {
+                console.error('Error al cargar reservas:', error);
+                showError('Error al cargar las reservas. Por favor intenta nuevamente.');
+            }
+        }
+
+        // Función para cargar reservas activas (combinando PENDIENTE y CONFIRMADA)
+        async function loadActiveReservations() {
+            try {
+                const tabContent = document.getElementById('activas');
+                if (!tabContent) return;
+
+                // Limpiar contenido existente
+                const existingCards = tabContent.querySelectorAll('.reservation-card');
+                existingCards.forEach(card => card.remove());
+
+                // Cargar PENDIENTE
+                await loadReservationsByStatus('PENDIENTE', 'activas');
+
+                // Cargar CONFIRMADA
+                await loadReservationsByStatus('CONFIRMADA', 'activas');
+
+            } catch (error) {
+                console.error('Error al cargar reservas activas:', error);
+            }
+        }
+
+        // Función para cargar reservas por estado
+        async function loadReservationsByStatus(status, tabId) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/reservas?estado=${status}&pagina=0&tamano=10`, {
+                    method: 'GET',
+                    headers: auth.getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error al cargar reservas ${status}`);
+                }
+
+                const result = await response.json();
+                const reservations = result.data.content || [];
+
+                // Agregar reservas al tab correspondiente
+                const tabContent = document.getElementById(tabId);
+                if (tabContent) {
+                    // Limpiar contenido existente para este estado
+                    if (status === 'PENDIENTE' || status === 'CONFIRMADA') {
+                        // Para estados activos, limpiar todo el contenido
+                        tabContent.innerHTML = '';
+                    }
+
+                    if (reservations.length > 0) {
+                        reservations.forEach(reservation => {
+                            const card = createReservationCard(reservation);
+                            tabContent.appendChild(card);
+                        });
+                    }
+                }
+
+            } catch (error) {
+                console.error(`Error al cargar reservas ${status}:`, error);
+            }
+        }
+
+        // Función para crear tarjeta de reserva
+        function createReservationCard(reservation) {
+            const card = document.createElement('div');
+            card.className = 'reservation-card';
+
+            const statusClass = getStatusClass(reservation.estado);
+            const statusText = getStatusText(reservation.estado);
+
+            card.innerHTML = `
+                <img src="https://placehold.co/400x200/cccccc/333333?text=${reservation.tituloAlojamiento || 'Alojamiento'}" alt="${reservation.tituloAlojamiento || 'Alojamiento'}">
+                <div class="reservation-details">
+                    <h4>${reservation.tituloAlojamiento || 'Alojamiento'}</h4>
+                    <p><i class="fa-solid fa-location-dot"></i> ${reservation.ciudad || 'Ubicación no especificada'}</p>
+                    <p><i class="fa-solid fa-calendar-days"></i> ${formatDate(reservation.fechaEntrada)} - ${formatDate(reservation.fechaSalida)}</p>
+                    <p><i class="fa-solid fa-money-bill-wave"></i> $${reservation.precio?.toLocaleString('es-CO') || '0'} COP</p>
+                </div>
+                <div class="reservation-actions">
+                    <span class="status ${statusClass}">${statusText}</span>
+                    <a href="details.html?id=${reservation.alojamientoId}" class="btn btn-secondary">Ver información</a>
+                    ${reservation.estado === 'PENDIENTE' || reservation.estado === 'CONFIRMADA' ?
+                        `<a href="#" class="btn btn-danger" onclick="cancelReservation(${reservation.id})">Cancelar</a>` : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Función para obtener clase CSS del estado
+        function getStatusClass(status) {
+            switch(status) {
+                case 'PENDIENTE': return 'pending';
+                case 'CONFIRMADA': return 'confirmed';
+                case 'COMPLETADA': return 'completed';
+                case 'CANCELADA': return 'cancelled';
+                default: return 'pending';
+            }
+        }
+
+        // Función para obtener texto del estado
+        function getStatusText(status) {
+            switch(status) {
+                case 'PENDIENTE': return 'Pendiente';
+                case 'CONFIRMADA': return 'Confirmada';
+                case 'COMPLETADA': return 'Completada';
+                case 'CANCELADA': return 'Cancelada';
+                default: return 'Pendiente';
+            }
+        }
+
+        // Función para formatear fecha
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-CO', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+
+        // Función para cancelar reserva
+        async function cancelReservation(reservationId) {
+            if (!confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/reservas/${reservationId}/estado`, {
+                    method: 'PATCH',
+                    headers: auth.getAuthHeaders()
+                });
+
+                if (response.ok) {
+                    alert('Reserva cancelada exitosamente');
+                    // Recargar la página para actualizar las reservas
+                    window.location.reload();
+                } else {
+                    alert('Error al cancelar la reserva');
+                }
+            } catch (error) {
+                console.error('Error al cancelar reserva:', error);
+                alert('Error de conexión. Por favor intenta nuevamente.');
+            }
+        }
+
+        // Función para mostrar estado de carga
+        function showLoadingState() {
+            // Agregar indicador de carga si es necesario
+            console.log('Cargando reservas...');
+        }
+
+        // Función para mostrar errores
+        function showError(message) {
+            alert(message);
+        }
+
+        // Funcionalidad de tabs
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+
+                    // Remover active de todos
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Agregar active al seleccionado
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+
 
 </body>
 </html>

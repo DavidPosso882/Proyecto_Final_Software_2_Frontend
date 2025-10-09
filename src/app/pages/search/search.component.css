@@ -1,0 +1,430 @@
+/* Search Component Styles - Layout de 2 columnas */
+.search-page-container {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+}
+
+.results-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.results-header h2 {
+    font-size: 2.2rem;
+    color: var(--dark-green);
+    margin-bottom: 0.5rem;
+}
+
+.results-header p {
+    color: #7F8C8D;
+}
+
+.search-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3rem;
+    align-items: flex-start;
+}
+
+/* Sidebar de filtros */
+.filters-sidebar {
+    background-color: var(--white-color);
+    border-radius: 20px;
+    padding: 2rem;
+    height: fit-content;
+    position: sticky;
+    top: 120px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(46, 139, 87, 0.05);
+}
+
+.filters-sidebar h3 {
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--light-green);
+    padding-bottom: 1rem;
+    color: var(--dark-green);
+}
+
+.filter-group {
+    margin-bottom: 2rem;
+}
+
+.filter-group h4 {
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.price-range input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.price-range input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.checkbox-group div {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-group input {
+    margin-right: 12px;
+}
+
+.filter-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+/* Sección de resultados */
+.results-section {
+    background-color: var(--white-color);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(46, 139, 87, 0.05);
+}
+
+/* Barra de búsqueda principal */
+.main-search-bar {
+    background-color: var(--white-color);
+    border-radius: 25px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(46, 139, 87, 0.2);
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto 2rem auto;
+    border: 2px solid rgba(46, 139, 87, 0.1);
+}
+
+.main-search-bar .search-field {
+    flex: 1;
+    padding: 0 20px;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.main-search-bar .search-field:last-of-type {
+    border-right: none;
+}
+
+.main-search-bar .search-field label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 4px;
+}
+
+.main-search-bar .search-field input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+    background: transparent;
+    color: var(--text-color);
+    font-family: var(--font-family);
+}
+
+.main-search-bar .btn-search {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(46, 139, 87, 0.3);
+}
+
+.main-search-bar .btn-search:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+/* Estados de carga y resultados */
+.results-container {
+    min-height: 400px;
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--light-green);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-color);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: var(--light-green);
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin-bottom: 0.5rem;
+    color: var(--dark-green);
+}
+
+.error-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--danger-color);
+}
+
+.error-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.error-state h3 {
+    margin-bottom: 0.5rem;
+    color: var(--danger-color);
+}
+
+/* Grid de alojamientos */
+.accommodations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.accommodation-card {
+    background-color: var(--white-color);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(46, 139, 87, 0.05);
+    cursor: pointer;
+}
+
+.accommodation-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(46, 139, 87, 0.15);
+}
+
+.card-image {
+    position: relative;
+}
+
+.card-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.favorite-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 1.4rem;
+    color: var(--white-color);
+    cursor: pointer;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.favorite-icon:hover {
+    background: var(--danger-color);
+    color: var(--white-color);
+}
+
+.card-info {
+    padding: 1.8rem;
+}
+
+.card-info h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--dark-green);
+    line-height: 1.4;
+}
+
+.card-info .location {
+    font-size: 0.9rem;
+    color: #7F8C8D;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-info .location i {
+    color: var(--primary-color);
+}
+
+.card-info .rating {
+    font-weight: 500;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-info .rating .fa-star {
+    color: #ffd700;
+}
+
+.card-info .price {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+}
+
+.pagination ul {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pagination li {
+    margin: 0;
+}
+
+.pagination a {
+    display: block;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.pagination a:hover,
+.pagination a.active {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .filters-sidebar {
+        position: static;
+        order: 2;
+    }
+
+    .results-section {
+        order: 1;
+    }
+
+    .main-search-bar {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    .main-search-bar .search-field {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem;
+    }
+
+    .main-search-bar .search-field:last-of-type {
+        border-bottom: none;
+    }
+
+    .main-search-bar .btn-search {
+        width: 100%;
+        border-radius: 12px;
+        margin-top: 1rem;
+    }
+
+    .accommodations-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .results-header h2 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-sidebar,
+    .results-section {
+        padding: 1.5rem;
+    }
+
+    .accommodation-card {
+        margin: 0;
+    }
+
+    .pagination a {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}

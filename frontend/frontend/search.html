@@ -3,12 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados de Búsqueda - ViviGo</title>
+    <title>Resultados de Búsqueda - CloudHouse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/style.css">
+    <script src="auth.js"></script>
+    <style>
+        .results-container {
+            min-height: 400px;
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-green);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-color);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--light-green);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark-green);
+        }
+
+        .accommodations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .accommodation-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .accommodation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .favorite-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .favorite-icon:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .card-info {
+            padding: 1.5rem;
+        }
+
+        .card-info h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+
+        .location {
+            color: var(--text-color);
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .location i {
+            color: var(--primary-color);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .rating i {
+            color: #ffd700;
+        }
+
+        .price {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .pagination {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .pagination ul {
+            display: inline-flex;
+            list-style: none;
+            gap: 0.5rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .pagination a {
+            display: block;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination a:hover,
+        .pagination a.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Avatar de Usuario */
+        .user-avatar {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .avatar-initials {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(46, 139, 87, 0.3);
+        }
+
+        .avatar-initials:hover {
+            background-color: var(--accent-color);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(46, 139, 87, 0.4);
+        }
+
+        /* Menú Dropdown */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background-color: var(--white-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-color);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .user-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        .user-dropdown a:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .user-dropdown a:last-child {
+            border-radius: 0 0 12px 12px;
+            border-bottom: none;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-green);
+            color: var(--primary-color);
+        }
+
+        .user-dropdown a i {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .user-dropdown {
+                right: -50px;
+                min-width: 180px;
+            }
+
+            .avatar-initials {
+                width: 36px;
+                height: 36px;
+                font-size: 12px;
+            }
+
+            .accommodations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -18,14 +292,10 @@
                 <div class="logo-icon">
                     <i class="fa-solid fa-house-chimney logo-house"></i>
                 </div>
-                <span class="logo-text">ViviGo</span>
+                <span class="logo-text">CloudHouse</span>
             </a>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#">Conviértete en Anfitrión</a></li>
-                    <li><a href="#" class="btn btn-secondary">Iniciar Sesión</a></li>
-                    <li><a href="#" class="btn btn-primary">Regístrate</a></li>
-                </ul>
+            <nav class="main-nav" id="mainNav">
+                <!-- Navigation will be dynamically updated based on authentication status -->
             </nav>
         </div>
     </header>
@@ -65,60 +335,27 @@
 
         <section class="results-section">
             <div class="results-header">
-                <h2>Resultados para "Bogotá D.C."</h2>
-                <p>Más de 300 alojamientos encontrados</p>
+                <h2 id="resultsTitle">Resultados de búsqueda</h2>
+                <p id="resultsCount">Cargando...</p>
             </div>
-            <div class="accommodations-grid">
-                <!-- Card 1 -->
-                <div class="accommodation-card">
-                    <div class="card-image"><img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800&auto=format&fit=crop" alt="Apartamento Moderno en el Centro"><div class="favorite-icon"><i class="fa-regular fa-heart"></i></div></div>
-                    <div class="card-info">
-                        <h3>Apartamento Moderno en el Centro</h3>
-                        <p class="location">Bogotá D.C., Chapinero</p>
-                        <div class="rating"><i class="fa-solid fa-star"></i> 4.85 (250)</div>
-                        <p class="price"><strong>$280,000 COP</strong> / noche</p>
-                    </div>
+            <div class="results-container" id="resultsContainer">
+                <div class="loading-state" id="loadingState">
+                    <div class="spinner"></div>
+                    <p>Buscando alojamientos...</p>
                 </div>
-                <!-- Card 2 -->
-                <div class="accommodation-card">
-                    <div class="card-image"><img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800&auto=format&fit=crop" alt="Villa con Piscina en la Montaña"><div class="favorite-icon"><i class="fa-regular fa-heart"></i></div></div>
-                    <div class="card-info">
-                        <h3>Villa con Piscina en la Montaña</h3>
-                        <p class="location">La Calera, Cundinamarca</p>
-                        <div class="rating"><i class="fa-solid fa-star"></i> 4.92 (120)</div>
-                        <p class="price"><strong>$450,000 COP</strong> / noche</p>
-                    </div>
+                <div class="accommodations-grid" id="accommodationsGrid" style="display: none;">
+                    <!-- Los alojamientos se cargarán dinámicamente aquí -->
                 </div>
-                <!-- Card 3 -->
-                <div class="accommodation-card">
-                    <div class="card-image"><img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop" alt="Loft Industrial con Vistas"><div class="favorite-icon"><i class="fa-regular fa-heart"></i></div></div>
-                    <div class="card-info">
-                        <h3>Loft Industrial con Vistas</h3>
-                        <p class="location">Medellín, El Poblado</p>
-                        <div class="rating"><i class="fa-solid fa-star"></i> 4.90 (180)</div>
-                        <p class="price"><strong>$320,000 COP</strong> / noche</p>
-                    </div>
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fa-solid fa-search"></i>
+                    <h3>No se encontraron alojamientos</h3>
+                    <p>No hay alojamientos que coincidan con tus criterios de búsqueda.</p>
+                    <button class="btn btn-primary" onclick="clearFilters()">Limpiar filtros</button>
                 </div>
-                <!-- Card 4 -->
-                <div class="accommodation-card">
-                    <div class="card-image"><img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=800&auto=format&fit=crop" alt="Cabaña Rústica junto al Lago"><div class="favorite-icon"><i class="fa-regular fa-heart"></i></div></div>
-                    <div class="card-info">
-                        <h3>Cabaña Rústica junto al Lago</h3>
-                        <p class="location">Guatavita, Cundinamarca</p>
-                        <div class="rating"><i class="fa-solid fa-star"></i> 4.98 (95)</div>
-                        <p class="price"><strong>$350,000 COP</strong> / noche</p>
-                    </div>
-                </div>
-                <!-- Add more cards as needed -->
             </div>
-            <nav class="pagination">
-                <ul>
-                    <li><a href="#" class="active">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">...</a></li>
-                    <li><a href="#">15</a></li>
-                    <li><a href="#">&raquo;</a></li>
+            <nav class="pagination" id="pagination" style="display: none;">
+                <ul id="paginationList">
+                    <!-- La paginación se generará dinámicamente -->
                 </ul>
             </nav>
         </section>
@@ -127,14 +364,382 @@
     <footer class="main-footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section"><h4>ViviGo</h4><ul><li><a href="#">Sobre Nosotros</a></li><li><a href="#">Prensa</a></li><li><a href="#">Carreras</a></li><li><a href="#">Políticas</a></li></ul></div>
+                <div class="footer-section"><h4>CloudHouse</h4><ul><li><a href="#">Sobre Nosotros</a></li><li><a href="#">Prensa</a></li><li><a href="#">Carreras</a></li><li><a href="#">Políticas</a></li></ul></div>
                 <div class="footer-section"><h4>Descubre</h4><ul><li><a href="#">Confianza y Seguridad</a></li><li><a href="#">Créditos de Viaje</a></li><li><a href="#">Ideas para Viajes</a></li></ul></div>
                 <div class="footer-section"><h4>Anfitriones</h4><ul><li><a href="#">¿Por qué ser anfitrión?</a></li><li><a href="#">Hospitalidad</a></li><li><a href="#">Centro de la Comunidad</a></li></ul></div>
                 <div class="footer-section social-media"><h4>Síguenos</h4><a href="#"><i class="fa-brands fa-facebook"></i></a><a href="#"><i class="fa-brands fa-twitter"></i></a><a href="#"><i class="fa-brands fa-instagram"></i></a></div>
             </div>
-            <div class="footer-bottom"><p>&copy; 2025 ViviGo. Todos los derechos reservados.</p></div>
+            <div class="footer-bottom"><p>&copy; 2025 CloudHouse. Todos los derechos reservados.</p></div>
         </div>
     </footer>
+
+    <script>
+        // Variables globales
+        let currentPage = 0;
+        let currentFilters = {};
+        let searchQuery = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando página de búsqueda...');
+
+            // Verificar autenticación y actualizar navegación
+            updateNavigation();
+
+            // Parsear parámetros de URL
+            parseUrlParameters();
+
+            // Configurar event listeners
+            setupEventListeners();
+
+            // Cargar resultados iniciales
+            loadSearchResults();
+        });
+
+        // Función para actualizar la navegación
+        function updateNavigation() {
+            const mainNav = document.getElementById('mainNav');
+            const token = auth.getToken();
+            const user = auth.getUser();
+            const isAuth = auth.isAuthenticated();
+
+            if (isAuth) {
+                // Usuario logueado - mostrar solo avatar con menú desplegable
+                const initials = getInitials(user.name);
+
+                mainNav.innerHTML = `
+                    <ul>
+                        <li>
+                            <div class="user-avatar" onclick="toggleUserMenu()">
+                                <span class="avatar-initials">${initials}</span>
+                                <div class="user-dropdown" id="userDropdown">
+                                    <a href="index.html">
+                                        <i class="fa-solid fa-home"></i>
+                                        Inicio
+                                    </a>
+                                    <a href="#" onclick="editProfile()">
+                                        <i class="fa-solid fa-user"></i>
+                                        Editar Perfil
+                                    </a>
+                                    <a href="#" onclick="auth.logout()">
+                                        <i class="fa-solid fa-right-from-bracket"></i>
+                                        Cerrar Sesión
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                `;
+            } else {
+                // Usuario no logueado - mostrar navegación pública
+                mainNav.innerHTML = `
+                    <ul>
+                        <li><a href="login.html" class="btn btn-secondary">Iniciar Sesión</a></li>
+                        <li><a href="register.html" class="btn btn-primary">Regístrate</a></li>
+                    </ul>
+                `;
+            }
+        }
+
+        // Función para extraer iniciales del nombre
+        function getInitials(name) {
+            return name.split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        }
+
+        // Función para editar perfil
+        function editProfile() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+            window.location.href = 'profile_edit.html';
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const avatar = document.querySelector('.user-avatar');
+            const dropdown = document.getElementById('userDropdown');
+
+            if (avatar && dropdown && !avatar.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Función para parsear parámetros de URL
+        function parseUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Obtener parámetros de búsqueda
+            searchQuery = urlParams.get('q') || '';
+            currentFilters.ciudad = urlParams.get('ciudad') || '';
+            currentFilters.fechaEntrada = urlParams.get('checkin') || '';
+            currentFilters.fechaSalida = urlParams.get('checkout') || '';
+            currentFilters.huespedes = urlParams.get('huespedes') || '';
+
+            // Actualizar título de resultados
+            updateResultsTitle();
+        }
+
+        // Función para actualizar el título de resultados
+        function updateResultsTitle() {
+            const resultsTitle = document.getElementById('resultsTitle');
+            if (searchQuery) {
+                resultsTitle.textContent = `Resultados para "${searchQuery}"`;
+            } else if (currentFilters.ciudad) {
+                resultsTitle.textContent = `Alojamientos en ${currentFilters.ciudad}`;
+            } else {
+                resultsTitle.textContent = 'Todos los alojamientos';
+            }
+        }
+
+        // Función para configurar event listeners
+        function setupEventListeners() {
+            // Botón de aplicar filtros
+            const filterBtn = document.querySelector('.filter-btn');
+            if (filterBtn) {
+                filterBtn.addEventListener('click', applyFilters);
+            }
+
+            // Inputs de precio
+            const priceMinInput = document.querySelector('.price-range input[placeholder="Mín"]');
+            const priceMaxInput = document.querySelector('.price-range input[placeholder="Máx"]');
+
+            if (priceMinInput) priceMinInput.addEventListener('input', updatePriceFilters);
+            if (priceMaxInput) priceMaxInput.addEventListener('input', updatePriceFilters);
+        }
+
+        // Función para actualizar filtros de precio
+        function updatePriceFilters() {
+            const priceMinInput = document.querySelector('.price-range input[placeholder="Mín"]');
+            const priceMaxInput = document.querySelector('.price-range input[placeholder="Máx"]');
+
+            currentFilters.precioMin = priceMinInput.value ? parseFloat(priceMinInput.value) : null;
+            currentFilters.precioMax = priceMaxInput.value ? parseFloat(priceMaxInput.value) : null;
+        }
+
+        // Función para aplicar filtros
+        function applyFilters() {
+            // Recopilar filtros de servicios
+            const serviceCheckboxes = document.querySelectorAll('.filter-group input[type="checkbox"]');
+            currentFilters.servicios = Array.from(serviceCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.id);
+
+            // Reiniciar página y cargar resultados
+            currentPage = 0;
+            loadSearchResults();
+        }
+
+        // Función para cargar resultados de búsqueda
+        async function loadSearchResults() {
+            const loadingState = document.getElementById('loadingState');
+            const accommodationsGrid = document.getElementById('accommodationsGrid');
+            const emptyState = document.getElementById('emptyState');
+            const pagination = document.getElementById('pagination');
+
+            try {
+                // Mostrar loading
+                loadingState.style.display = 'flex';
+                accommodationsGrid.style.display = 'none';
+                emptyState.style.display = 'none';
+                pagination.style.display = 'none';
+
+                // Construir parámetros de consulta
+                const params = new URLSearchParams();
+                params.append('pagina', currentPage);
+
+                if (currentFilters.ciudad) params.append('ciudad', currentFilters.ciudad);
+                if (currentFilters.fechaEntrada) params.append('fechaEntrada', currentFilters.fechaEntrada);
+                if (currentFilters.fechaSalida) params.append('fechaSalida', currentFilters.fechaSalida);
+                if (currentFilters.huespedes) params.append('huespedes', currentFilters.huespedes);
+                if (currentFilters.precioMin) params.append('precioMin', currentFilters.precioMin);
+                if (currentFilters.precioMax) params.append('precioMax', currentFilters.precioMax);
+
+                // Hacer la petición
+                const response = await fetch(`http://localhost:8080/api/alojamientos?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al cargar alojamientos');
+                }
+
+                const result = await response.json();
+                const accommodations = result.data || [];
+                const totalPages = Math.ceil((result.total || 0) / 10); // Asumiendo 10 por página
+
+                // Ocultar loading
+                loadingState.style.display = 'none';
+
+                // Actualizar contador de resultados
+                updateResultsCount(result.total || 0);
+
+                if (accommodations.length === 0) {
+                    emptyState.style.display = 'block';
+                    accommodationsGrid.style.display = 'none';
+                    pagination.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'none';
+                    accommodationsGrid.style.display = 'grid';
+                    renderAccommodations(accommodations);
+
+                    // Mostrar paginación si hay más de una página
+                    if (totalPages > 1) {
+                        pagination.style.display = 'block';
+                        renderPagination(totalPages);
+                    } else {
+                        pagination.style.display = 'none';
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error al cargar resultados:', error);
+                loadingState.style.display = 'none';
+                emptyState.innerHTML = `
+                    <i class="fa-solid fa-exclamation-triangle" style="color: var(--danger-color);"></i>
+                    <h3>Error al cargar alojamientos</h3>
+                    <p>No pudimos cargar los resultados. Por favor intenta nuevamente.</p>
+                    <button class="btn btn-primary" onclick="loadSearchResults()">
+                        <i class="fa-solid fa-refresh"></i> Reintentar
+                    </button>
+                `;
+                emptyState.style.display = 'block';
+                accommodationsGrid.style.display = 'none';
+                pagination.style.display = 'none';
+            }
+        }
+
+        // Función para actualizar contador de resultados
+        function updateResultsCount(total) {
+            const resultsCount = document.getElementById('resultsCount');
+            if (total === 0) {
+                resultsCount.textContent = 'No se encontraron alojamientos';
+            } else if (total === 1) {
+                resultsCount.textContent = '1 alojamiento encontrado';
+            } else {
+                resultsCount.textContent = `${total} alojamientos encontrados`;
+            }
+        }
+
+        // Función para renderizar alojamientos
+        function renderAccommodations(accommodations) {
+            const accommodationsGrid = document.getElementById('accommodationsGrid');
+
+            accommodationsGrid.innerHTML = accommodations.map(accommodation => `
+                <div class="accommodation-card" onclick="viewAccommodation(${accommodation.id})">
+                    <div class="card-image">
+                        <img src="${accommodation.imagenPrincipal || 'https://placehold.co/400x200/cccccc/333333?text=Alojamiento'}" alt="${accommodation.titulo}">
+                        <div class="favorite-icon" onclick="event.stopPropagation(); toggleFavorite(${accommodation.id})">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h3>${accommodation.titulo}</h3>
+                        <p class="location">
+                            <i class="fa-solid fa-map-marker-alt"></i>
+                            <span>${accommodation.direccion ? `${accommodation.direccion.ciudad}, ${accommodation.direccion.departamento || ''}` : 'Ubicación no especificada'}</span>
+                        </p>
+                        <div class="rating">
+                            <i class="fa-solid fa-star"></i>
+                            <span>${accommodation.promedioCalificaciones?.toFixed(1) || '0.0'} (${accommodation.numeroCalificaciones || 0})</span>
+                        </div>
+                        <p class="price"><strong>$${accommodation.precioPorNoche?.toFixed(0) || '0'} COP</strong> / noche</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Función para renderizar paginación
+        function renderPagination(totalPages) {
+            const paginationList = document.getElementById('paginationList');
+            paginationList.innerHTML = '';
+
+            // Botón anterior
+            if (currentPage > 0) {
+                paginationList.innerHTML += `<li><a href="#" onclick="changePage(${currentPage - 1})">&laquo;</a></li>`;
+            }
+
+            // Páginas
+            const startPage = Math.max(0, currentPage - 2);
+            const endPage = Math.min(totalPages - 1, currentPage + 2);
+
+            if (startPage > 0) {
+                paginationList.innerHTML += `<li><a href="#" onclick="changePage(0)">1</a></li>`;
+                if (startPage > 1) {
+                    paginationList.innerHTML += `<li><span>...</span></li>`;
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const activeClass = i === currentPage ? 'active' : '';
+                paginationList.innerHTML += `<li><a href="#" class="${activeClass}" onclick="changePage(${i})">${i + 1}</a></li>`;
+            }
+
+            if (endPage < totalPages - 1) {
+                if (endPage < totalPages - 2) {
+                    paginationList.innerHTML += `<li><span>...</span></li>`;
+                }
+                paginationList.innerHTML += `<li><a href="#" onclick="changePage(${totalPages - 1})">${totalPages}</a></li>`;
+            }
+
+            // Botón siguiente
+            if (currentPage < totalPages - 1) {
+                paginationList.innerHTML += `<li><a href="#" onclick="changePage(${currentPage + 1})">&raquo;</a></li>`;
+            }
+        }
+
+        // Función para cambiar página
+        function changePage(page) {
+            currentPage = page;
+            loadSearchResults();
+            window.scrollTo(0, 0);
+        }
+
+        // Función para ver detalles del alojamiento
+        function viewAccommodation(id) {
+            window.location.href = `details.html?id=${id}`;
+        }
+
+        // Función para toggle de favoritos
+        function toggleFavorite(id) {
+            alert('Funcionalidad de favoritos se implementará próximamente');
+        }
+
+        // Función para limpiar filtros
+        function clearFilters() {
+            // Limpiar inputs de precio
+            const priceMinInput = document.querySelector('.price-range input[placeholder="Mín"]');
+            const priceMaxInput = document.querySelector('.price-range input[placeholder="Máx"]');
+
+            if (priceMinInput) priceMinInput.value = '';
+            if (priceMaxInput) priceMaxInput.value = '';
+
+            // Limpiar checkboxes de servicios
+            const serviceCheckboxes = document.querySelectorAll('.filter-group input[type="checkbox"]');
+            serviceCheckboxes.forEach(cb => cb.checked = false);
+
+            // Resetear filtros
+            currentFilters = {};
+            currentPage = 0;
+
+            // Recargar resultados
+            loadSearchResults();
+        }
+    </script>
 
 </body>
 </html>

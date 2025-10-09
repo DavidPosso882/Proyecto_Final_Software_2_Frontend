@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - ViviGo</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Registro - CloudHouse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +21,7 @@
                 <div class="logo-icon">
                     <i class="fa-solid fa-house-chimney logo-house"></i>
                 </div>
-                <span class="logo-text">ViviGo</span>
+                <span class="logo-text">CloudHouse</span>
             </a>
             <nav class="main-nav">
                 <ul>
@@ -32,23 +35,17 @@
         <div class="register-layout" style="display: flex; justify-content: center; align-items: flex-start; min-height: calc(100vh - 200px); padding: 2rem 0;">
             <section class="dashboard-content" style="width: 100%; max-width: 800px; margin: 0;">
                 <div class="content-header" style="text-align: center; margin-bottom: 3rem;">
-                    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Únete a ViviGo</h1>
+                    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Únete a CloudHouse</h1>
                     <p style="font-size: 1.2rem; color: #7F8C8D;">Crea tu cuenta y comienza tu aventura</p>
                 </div>
                 
                 <div class="form-container">
                     <form id="registerForm">
-                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 700px; margin: 0 auto;">
+                        <div class="form-grid" style="grid-template-columns: 1fr; gap: 2rem; max-width: 700px; margin: 0 auto;">
                             <div class="form-group">
-                                <label for="firstName">Nombre *</label>
-                                <input type="text" id="firstName" name="firstName" required placeholder="Tu nombre">
-                                <div class="error-message" id="firstNameError"></div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="lastName">Apellido *</label>
-                                <input type="text" id="lastName" name="lastName" required placeholder="Tu apellido">
-                                <div class="error-message" id="lastNameError"></div>
+                                <label for="nombre">Nombre Completo *</label>
+                                <input type="text" id="nombre" name="nombre" required placeholder="Ej: Juan Pérez">
+                                <div class="error-message" id="nombreError"></div>
                             </div>
                             
                             <div class="form-group full-width">
@@ -89,14 +86,17 @@
                                 <div class="error-message" id="birthDateError"></div>
                             </div>
                             
-                            <div class="form-group full-width">
+              <!--              <div class="form-group full-width">
                                 <label for="role">Tipo de Usuario *</label>
                                 <select id="role" name="role" required>
+                                    <option value="">Selecciona una opción</option>
                                     <option value="guest">Huésped - Quiero reservar alojamientos</option>
+                                    <option value="host">Anfitrión - Quiero ofrecer mi propiedad</option>
+                                    <option value="both">Ambos - Huésped y Anfitrión</option>
                                 </select>
                                 <div class="error-message" id="roleError"></div>
                             </div>
-                            
+                        -->               
                             <div class="form-group full-width" style="display: block !important; flex-direction: initial !important;">
                                 <div style="display: table; width: 100%;">
                                     <div style="display: table-cell; width: 20px; vertical-align: top; padding-top: 3px;">
@@ -104,7 +104,7 @@
                                     </div>
                                     <div style="display: table-cell; vertical-align: top; padding-left: 8px;">
                                         <label for="terms" style="font-weight: 400; line-height: 1.5; cursor: pointer; margin: 0; display: block;">
-                                            Acepto los <a href="#" style="color: var(--primary-color); font-weight: 600;">Términos y Condiciones</a> y la <a href="#" style="color: var(--primary-color); font-weight: 600;">Política de Privacidad</a> de ViviGo *
+                                            Acepto los <a href="#" style="color: var(--primary-color); font-weight: 600;">Términos y Condiciones</a> y la <a href="#" style="color: var(--primary-color); font-weight: 600;">Política de Privacidad</a> de CloudHouse *
                                         </label>
                                     </div>
                                 </div>
@@ -114,7 +114,7 @@
                         </div>
                         
                         <div class="form-navigation" style="justify-content: center; border-top: none; padding-top: 2rem; max-width: 700px; margin: 0 auto;">
-                            <button type="submit" id="registerButton" class="btn btn-primary" style="width: 300px; padding: 16px 24px; font-size: 1.1rem;">
+                            <button type="submit" class="btn btn-primary" style="width: 300px; padding: 16px 24px; font-size: 1.1rem;">
                                 <i class="fa-solid fa-user-plus"></i>
                                 Crear mi cuenta
                             </button>
@@ -132,7 +132,7 @@
 
     <footer class="main-footer">
         <div class="container">
-            <div class="footer-bottom"><p>&copy; 2025 ViviGo. Todos los derechos reservados.</p></div>
+            <div class="footer-bottom"><p>&copy; 2025 CloudHouse. Todos los derechos reservados.</p></div>
         </div>
     </footer>
 
@@ -186,7 +186,7 @@
             border-color: var(--danger-color);
             box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
         }
-
+        
         .loading-spinner {
             display: inline-block;
             width: 16px;
@@ -196,13 +196,21 @@
             border-top-color: transparent;
             animation: spin 1s ease-in-out infinite;
         }
-
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
     </style>
 
     <script>
+        // Forzar recarga para evitar cache
+        console.log('Register script loaded - v2');
+        
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('registerForm');
             const passwordInput = document.getElementById('password');
@@ -237,13 +245,11 @@
                 }
             });
             
-            // Form validation
-            form.addEventListener('submit', async function(e) {
-                console.log('Formulario enviado'); // Debug
+            // Form validation and submission
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 let isValid = true;
-                console.log('Iniciando validación'); // Debug
                 
                 // Clear previous errors
                 document.querySelectorAll('.error-message').forEach(error => {
@@ -254,7 +260,7 @@
                 });
                 
                 // Validate required fields
-                const requiredFields = ['firstName', 'lastName', 'email', 'password', 'confirmPassword', 'phone', 'birthDate', 'role'];
+                const requiredFields = ['nombre', 'email', 'password', 'confirmPassword', 'phone', 'birthDate'];
                 
                 requiredFields.forEach(fieldName => {
                     const field = document.getElementById(fieldName);
@@ -267,9 +273,9 @@
                 });
                 
                 // Validate email format
-                let email = document.getElementById('email');
-                let emailError = document.getElementById('emailError');
-                let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const email = document.getElementById('email');
+                const emailError = document.getElementById('emailError');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 
                 if (email.value && !emailRegex.test(email.value)) {
                     showError(email, emailError, 'Por favor ingresa un email válido');
@@ -277,8 +283,8 @@
                 }
                 
                 // Validate password strength
-                let password = passwordInput.value;
-                let passwordError = document.getElementById('passwordError');
+                const password = passwordInput.value;
+                const passwordError = document.getElementById('passwordError');
                 
                 if (password && (password.length < 8 || !/[A-Z]/.test(password) || !/\d/.test(password))) {
                     showError(passwordInput, passwordError, 'La contraseña no cumple con los requisitos');
@@ -286,8 +292,8 @@
                 }
                 
                 // Validate password confirmation
-                let confirmPassword = confirmPasswordInput.value;
-                let confirmPasswordError = document.getElementById('confirmPasswordError');
+                const confirmPassword = confirmPasswordInput.value;
+                const confirmPasswordError = document.getElementById('confirmPasswordError');
                 
                 if (password !== confirmPassword) {
                     showError(confirmPasswordInput, confirmPasswordError, 'Las contraseñas no coinciden');
@@ -295,9 +301,9 @@
                 }
                 
                 // Validate phone format
-                let phone = document.getElementById('phone');
-                let phoneError = document.getElementById('phoneError');
-                let phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+                const phone = document.getElementById('phone');
+                const phoneError = document.getElementById('phoneError');
+                const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
                 
                 if (phone.value && !phoneRegex.test(phone.value)) {
                     showError(phone, phoneError, 'Por favor ingresa un teléfono válido');
@@ -305,14 +311,14 @@
                 }
                 
                 // Validate age (must be 18+)
-                let birthDate = document.getElementById('birthDate');
-                let birthDateError = document.getElementById('birthDateError');
+                const birthDate = document.getElementById('birthDate');
+                const birthDateError = document.getElementById('birthDateError');
                 
                 if (birthDate.value) {
-                    let today = new Date();
-                    let birth = new Date(birthDate.value);
-                    let age = today.getFullYear() - birth.getFullYear();
-                    let monthDiff = today.getMonth() - birth.getMonth();
+                    const today = new Date();
+                    const birth = new Date(birthDate.value);
+                    const age = today.getFullYear() - birth.getFullYear();
+                    const monthDiff = today.getMonth() - birth.getMonth();
                     
                     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
                         age--;
@@ -325,99 +331,84 @@
                 }
                 
                 // Validate terms acceptance
-                let terms = document.getElementById('terms');
-                let termsError = document.getElementById('termsError');
+                const terms = document.getElementById('terms');
+                const termsError = document.getElementById('termsError');
                 
                 if (!terms.checked) {
                     showError(terms, termsError, 'Debes aceptar los términos y condiciones');
                     isValid = false;
                 }
                 
-                console.log('Validación finalizada, isValid:', isValid); // Debug
                 if (isValid) {
-                    console.log('Enviando formulario al backend'); // Debug
-                    // Enviar datos al backend
-                    await registerUser();
-                } else {
-                    console.log('Formulario no válido'); // Debug
+                    registerUser();
                 }
             });
+            
+            // Function to register user with backend
+            async function registerUser() {
+                var submitButton = form.querySelector('button[type="submit"]');
+                var originalButtonText = submitButton.innerHTML;
+                
+                // Show loading state
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="loading-spinner"></span> Creando cuenta...';
+                
+                try {
+                    // Get form data
+                    var formData = {
+                        nombre: document.getElementById('nombre').value.trim(),
+                        email: document.getElementById('email').value.trim(),
+                        contrasena: document.getElementById('password').value,
+                        telefono: document.getElementById('phone').value.trim(),
+                        fechaNacimiento: document.getElementById('birthDate').value
+                    };
+                    
+                    // Send registration request to backend
+                    var response = await fetch('http://localhost:8080/api/auth/registro', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    var result = await response.json();
+                    
+                    if (response.ok && !result.error) {
+                        // Registration successful
+                        alert('¡Registro exitoso! Bienvenido a CloudHouse');
+                        window.location.href = 'login.html';
+                    } else {
+                        // Registration failed - show backend error message
+                        if (result.mensaje) {
+                            // Show general error from backend
+                            showError(document.getElementById('email'), document.getElementById('emailError'), result.mensaje);
+                        } else {
+                            // Show generic error
+                            showError(document.getElementById('email'), document.getElementById('emailError'), 'Error en el registro. Intenta nuevamente.');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error en el registro:', error);
+                    
+                    // Handle network errors
+                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        showError(document.getElementById('email'), document.getElementById('emailError'), 'Error de conexión. Verifica que el servidor esté disponible.');
+                    } else {
+                        showError(document.getElementById('email'), document.getElementById('emailError'), 'Error en el registro. Intenta nuevamente.');
+                    }
+                } finally {
+                    // Restore button state
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                }
+            }
             
             function showError(input, errorElement, message) {
                 input.classList.add('error');
                 errorElement.textContent = message;
                 errorElement.classList.add('show');
-            }
-
-            function mapRole(role) {
-                // Mapear el rol al valor que espera el backend
-                return 'USER';
-            }
-
-            async function registerUser() {
-                console.log('Iniciando registerUser'); // Debug
-                const submitButton = document.getElementById('registerButton');
-                let originalText = submitButton.innerHTML;
-
-                // Mostrar loading
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<span class="loading-spinner"></span> Registrando...';
-
-                try {
-                    // Mapear datos del formulario según el DTO del backend
-                    const formData = {
-                        nombre: document.getElementById('firstName').value.trim() + ' ' + document.getElementById('lastName').value.trim(),
-                        email: document.getElementById('email').value.trim(),
-                        contrasena: document.getElementById('password').value,
-                        telefono: document.getElementById('phone').value.trim(),
-                        fechaNacimiento: document.getElementById('birthDate').value,
-                        rol: mapRole(document.getElementById('role').value)
-                    };
-
-                    console.log('Datos a enviar:', formData); // Debug
-
-                    // Enviar petición al backend
-                    console.log('Enviando petición al backend...'); // Debug
-                    const response = await fetch('http://localhost:8080/api/auth/registro', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    console.log('Respuesta recibida:', response.status); // Debug
-
-                    let result;
-                    try {
-                        result = await response.json();
-                    } catch (e) {
-                        result = { mensaje: 'Error al procesar la respuesta del servidor' };
-                    }
-
-                    console.log('Respuesta del servidor:', result); // Debug
-
-                    if (response.ok) {
-                        // Registro exitoso
-                        alert('¡Registro exitoso! Bienvenido a ViviGo. Ahora puedes iniciar sesión.');
-                        window.location.href = 'login.html';
-                    } else {
-                        // Error del backend
-                        if (result.mensaje) {
-                            alert('Error: ' + result.mensaje);
-                        } else {
-                            alert('Error en el registro. Por favor intenta de nuevo.');
-                        }
-                    }
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error de conexión. Por favor verifica que el servidor backend esté ejecutándose.');
-                } finally {
-                    // Restaurar botón
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = originalText;
-                }
             }
         });
     </script>

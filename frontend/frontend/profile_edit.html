@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Perfil - ViviGo</title>
+    <title>Editar Perfil - CloudHouse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/style.css">
+    <script src="auth.js"></script>
 </head>
 <body>
 
@@ -18,15 +19,10 @@
                 <div class="logo-icon">
                     <i class="fa-solid fa-house-chimney logo-house"></i>
                 </div>
-                <span class="logo-text">ViviGo</span>
+                <span class="logo-text">CloudHouse</span>
             </a>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#" class="user-menu">
-                        <img src="https://placehold.co/50x50/cccccc/333333?text=DA" alt="Foto del usuario">
-                        <span>Daniela Arboleda</span>
-                    </a></li>
-                </ul>
+            <nav class="main-nav" id="mainNav">
+                <!-- Navigation will be dynamically updated based on authentication status -->
             </nav>
         </div>
     </header>
@@ -37,14 +33,14 @@
                 <div class="user-profile-summary">
                     <img src="https://placehold.co/80x80/cccccc/333333?text=DA" alt="Foto del usuario" id="currentProfileImage">
                     <h3>Daniela Arboleda</h3>
-                    <p id="userRole">Usuaria desde 2023</p>
+                    <p id="userRole">Usuario desde 2025</p>
                 </div>
                 <ul>
-                    <li><a href="dashboard.html" id="dashboardLink"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-                    <li><a href="#" id="reservationsLink"><i class="fa-solid fa-calendar-check"></i> Mis Reservas</a></li>
-                    <li><a href="#" id="favoritesLink"><i class="fa-solid fa-heart"></i> Favoritos</a></li>
+                    <li><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                    <li><a href="#"><i class="fa-solid fa-calendar-check"></i> Mis Reservas</a></li>
+                    <li><a href="#"><i class="fa-solid fa-heart"></i> Favoritos</a></li>
                     <li class="active"><a href="profile_edit.html"><i class="fa-solid fa-user-pen"></i> Editar Perfil</a></li>
-                    <li><a href="#" id="logoutLink"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
+                    <li><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
                 </ul>
             </aside>
 
@@ -88,14 +84,9 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="firstName">Nombre *</label>
-                                <input type="text" id="firstName" name="firstName" value="Daniela" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="lastName">Apellido *</label>
-                                <input type="text" id="lastName" name="lastName" value="Arboleda" required>
+                            <div class="form-group full-width">
+                                <label for="nombreCompleto">Nombre Completo *</label>
+                                <input type="text" id="nombreCompleto" name="nombreCompleto" required placeholder="Ej: David Alfonso Posso Cano">
                             </div>
                             
                             <div class="form-group full-width">
@@ -117,7 +108,7 @@
                             
                             <div class="form-group full-width">
                                 <label for="bio">Acerca de ti</label>
-                                <textarea id="bio" name="bio" rows="4" placeholder="Cuéntanos algo sobre ti...">Anfitriona experimentada con pasión por la hospitalidad. Me encanta compartir mi conocimiento local y crear experiencias únicas para mis huéspedes.</textarea>
+                                <textarea id="bio" name="bio" rows="4" placeholder="Cuéntanos algo sobre ti...">...</textarea>
                             </div>
                             
                             <div class="form-group">
@@ -134,11 +125,9 @@
                                 <label for="userType">Tipo de Usuario</label>
                                 <select id="userType" name="userType">
                                     <option value="guest" selected>Huésped</option>
-                                    <option value="host">Convertirme en Anfitrión</option>
+                                    <option value="host">Anfitrión</option>
+                                    <!--<option value="both">Huésped y Anfitrión</option>-->
                                 </select>
-                                <small style="color: var(--primary-color); font-weight: 500; display: block; margin-top: 0.5rem;">
-                                    <i class="fa-solid fa-info-circle"></i> Al seleccionar "Convertirme en Anfitrión" deberás completar el formulario de información de anfitrión
-                                </small>
                             </div>
                         </div>
                         
@@ -155,14 +144,13 @@
                     <form id="hostForm">
                         <div class="form-grid">
                             <div class="form-group full-width">
-                                <label for="hostDescription">Descripción como Anfitrión *</label>
-                                <textarea id="hostDescription" name="hostDescription" rows="5" placeholder="Describe tu experiencia como anfitrión, tu estilo de hospitalidad y qué hace especial tu alojamiento..." required></textarea>
-                                <div class="error-message" id="hostDescriptionError"></div>
+                                <label for="hostDescription">Descripción como Anfitrión</label>
+                                <textarea id="hostDescription" name="hostDescription" rows="5" placeholder="Describe tu experiencia como anfitrión, tu estilo de hospitalidad y qué hace especial tu alojamiento...">Soy un anfitrión experimentado con más de 3 años ofreciendo alojamientos únicos. Me encanta compartir mi conocimiento local y asegurarme de que mis huéspedes tengan la mejor experiencia posible.</textarea>
                             </div>
                             
                             <div class="form-group">
-                                <label for="hostExperience">Años de Experiencia *</label>
-                                <select id="hostExperience" name="hostExperience" required>
+                                <label for="hostExperience">Años de Experiencia</label>
+                                <select id="hostExperience" name="hostExperience">
                                     <option value="">Selecciona...</option>
                                     <option value="nuevo">Nuevo anfitrión</option>
                                     <option value="1">1 año</option>
@@ -171,18 +159,16 @@
                                     <option value="4">4 años</option>
                                     <option value="5+">5+ años</option>
                                 </select>
-                                <div class="error-message" id="hostExperienceError"></div>
                             </div>
                             
                             <div class="form-group">
-                                <label for="responseTime">Tiempo de Respuesta *</label>
-                                <select id="responseTime" name="responseTime" required>
+                                <label for="responseTime">Tiempo de Respuesta</label>
+                                <select id="responseTime" name="responseTime">
                                     <option value="1h" selected>Dentro de 1 hora</option>
                                     <option value="2h">Dentro de 2 horas</option>
                                     <option value="24h">Dentro de 24 horas</option>
                                     <option value="48h">Dentro de 48 horas</option>
                                 </select>
-                                <div class="error-message" id="responseTimeError"></div>
                             </div>
                             
                             <div class="form-group full-width">
@@ -218,7 +204,6 @@
                                 <small style="color: #7F8C8D; font-size: 0.85rem; display: block; margin-top: 1rem;">
                                     Los documentos legales ayudan a generar más confianza con los huéspedes y pueden mejorar tu posicionamiento.
                                 </small>
-                                <div class="error-message" id="documentError"></div>
                             </div>
                             
                             <div class="form-group full-width">
@@ -341,7 +326,7 @@
 
     <footer class="main-footer">
         <div class="container">
-            <div class="footer-bottom"><p>&copy; 2025 ViviGo. Todos los derechos reservados.</p></div>
+            <div class="footer-bottom"><p>&copy; 2025 CloudHouse. Todos los derechos reservados.</p></div>
         </div>
     </footer>
 
@@ -378,11 +363,105 @@
             content: "✓ ";
             font-weight: bold;
         }
+
+        /* Estilos para el avatar y menú desplegable */
+        .user-avatar {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 50px;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            background-color: var(--light-green);
+        }
+
+        .avatar-initials {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .user-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-green);
+            color: var(--primary-color);
+        }
+
+        .user-dropdown a:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .user-dropdown a:last-child {
+            border-radius: 0 0 12px 12px;
+        }
+
+        .user-dropdown a:only-child {
+            border-radius: 12px;
+        }
     </style>
 
     <script>
+        // AUTENTICACIÓN Y NAVEGACIÓN DINÁMICA
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar datos del usuario desde localStorage
+            console.log('Inicializando autenticación...');
+
+            // Verificar autenticación y actualizar UI
+            updateNavigation();
+
+            // Verificar si el token está expirado
+            if (auth.isAuthenticated() && auth.isTokenExpired()) {
+                console.log('Token expirado, cerrando sesión...');
+                auth.logout();
+            }
+
+            // Verificar autenticación para el resto de la funcionalidad
+            if (!auth.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Cargar datos del usuario desde el backend
             loadUserData();
 
             const tabLinks = document.querySelectorAll('.tab-link');
@@ -408,7 +487,7 @@
             // Show/hide host tab based on user type
             function toggleHostTab() {
                 const userType = userTypeSelect.value;
-                if (userType === 'host') {
+                if (userType === 'host' || userType === 'both') {
                     hostTab.style.display = 'block';
                 } else {
                     hostTab.style.display = 'none';
@@ -420,8 +499,8 @@
             }
             
             userTypeSelect.addEventListener('change', toggleHostTab);
-            toggleHostTab(); // Initial check
-            
+            // No llamar a toggleHostTab() aquí, se llamará después de cargar los datos
+
             // Profile image preview
             document.getElementById('profileImage').addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -434,7 +513,7 @@
                     reader.readAsDataURL(file);
                 }
             });
-            
+
             // Password strength validation for new password
             const newPasswordInput = document.getElementById('newPassword');
             if (newPasswordInput) {
@@ -443,21 +522,21 @@
                     const lengthReq = document.getElementById('newLength');
                     const uppercaseReq = document.getElementById('newUppercase');
                     const numberReq = document.getElementById('newNumber');
-                    
+
                     // Check length
                     if (password.length >= 8) {
                         lengthReq.classList.add('valid');
                     } else {
                         lengthReq.classList.remove('valid');
                     }
-                    
+
                     // Check uppercase
                     if (/[A-Z]/.test(password)) {
                         uppercaseReq.classList.add('valid');
                     } else {
                         uppercaseReq.classList.remove('valid');
                     }
-                    
+
                     // Check number
                     if (/\d/.test(password)) {
                         numberReq.classList.add('valid');
@@ -466,77 +545,569 @@
                     }
                 });
             }
-            
+
             // Form submissions
             document.getElementById('personalForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                updatePersonalInfo();
+                savePersonalData();
             });
-            
+
             document.getElementById('hostForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-
-                // Validar campos obligatorios
-                const requiredFields = [
-                    'hostDescription', 'hostExperience', 'responseTime'
-                ];
-
-                let isValid = true;
-                let firstInvalidField = null;
-
-                // Limpiar errores previos
-                document.querySelectorAll('#host .error-message').forEach(error => {
-                    error.classList.remove('show');
-                });
-                document.querySelectorAll('#host .error').forEach(input => {
-                    input.classList.remove('error');
-                });
-
-                // Validar campos de texto obligatorios
-                requiredFields.forEach(fieldName => {
-                    const field = document.getElementById(fieldName);
-                    const errorElement = document.getElementById(fieldName + 'Error');
-
-                    if (!field || !field.value.trim()) {
-                        if (errorElement) {
-                            errorElement.textContent = 'Este campo es obligatorio';
-                            errorElement.classList.add('show');
-                        }
-                        if (field) field.classList.add('error');
-                        if (!firstInvalidField) firstInvalidField = field;
-                        isValid = false;
-                    }
-                });
-
-                // Validar que al menos un documento esté subido
-                const cedulaFile = document.getElementById('cedula').files[0];
-                const rutFile = document.getElementById('rut').files[0];
-
-                if (!cedulaFile && !rutFile) {
-                    const documentError = document.getElementById('documentError');
-                    if (documentError) {
-                        documentError.textContent = 'Debes subir al menos un documento legal';
-                        documentError.classList.add('show');
-                    }
-                    isValid = false;
-                    if (!firstInvalidField) firstInvalidField = document.getElementById('cedula');
-                }
-
-                if (!isValid) {
-                    if (firstInvalidField) firstInvalidField.focus();
-                    return;
-                }
-
-                // Si todo es válido, proceder con la conversión
-                convertToHost();
+                saveHostData();
             });
-            
+
             document.getElementById('securityForm').addEventListener('submit', function(e) {
                 e.preventDefault();
+                changePassword();
+            });
+        });
+
+        // FUNCIONES DE NAVEGACIÓN DINÁMICA
+        function updateNavigation() {
+            const mainNav = document.getElementById('mainNav');
+            const token = auth.getToken();
+            const user = auth.getUser();
+            const isAuth = auth.isAuthenticated();
+
+            if (isAuth) {
+                // Usuario logueado - mostrar solo avatar con menú desplegable
+                const initials = getInitials(user.name);
+
+                mainNav.innerHTML = `
+                    <ul>
+                        <li>
+                            <div class="user-avatar" onclick="toggleUserMenu()">
+                                <span class="avatar-initials">${initials}</span>
+                                <div class="user-dropdown" id="userDropdown">
+                                    <a href="#" onclick="auth.logout()">
+                                        <i class="fa-solid fa-right-from-bracket"></i>
+                                        Cerrar Sesión
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                `;
+            } else {
+                // Usuario no logueado - mostrar navegación pública
+                mainNav.innerHTML = `
+                    <ul>
+                        <li><a href="login.html" class="btn btn-secondary">Iniciar Sesión</a></li>
+                        <li><a href="register.html" class="btn btn-primary">Regístrate</a></li>
+                    </ul>
+                `;
+            }
+        }
+
+        // Función para extraer iniciales del nombre
+        function getInitials(name) {
+            return name.split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        }
+
+        // Función para editar perfil
+        function editProfile() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+
+            // Redirigir a la página de edición de perfil
+            window.location.href = 'profile_edit.html';
+        }
+
+        // Cerrar menú al hacer clic fuera de él
+        document.addEventListener('click', function(event) {
+            const avatar = document.querySelector('.user-avatar');
+            const dropdown = document.getElementById('userDropdown');
+
+            if (avatar && dropdown && !avatar.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Función para cargar datos del usuario desde el backend
+        async function loadUserData() {
+            try {
+                const user = auth.getUser();
+                if (!user || !user.id) {
+                    throw new Error('No se encontró información del usuario');
+                }
                 
+                // Llamar al backend para obtener datos completos del usuario
+                const response = await fetch(`http://localhost:8080/api/usuarios/${user.id}`, {
+                    method: 'GET',
+                    headers: auth.getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error al obtener datos del usuario');
+                }
+                
+                const result = await response.json();
+                const userData = result.data; // El backend devuelve UsuarioDTO en el campo data
+                
+                // Actualizar la interfaz con los datos reales
+                updateUIWithUserData(userData);
+                
+            } catch (error) {
+                console.error('Error al cargar datos del usuario:', error);
+                // Si hay error, mostrar mensaje y redirigir a login
+                alert('Error al cargar tu perfil. Por favor inicia sesión nuevamente.');
+                auth.logout();
+            }
+        }
+        
+        // Función para actualizar la UI con los datos del usuario
+        function updateUIWithUserData(userData) {
+            console.log('Datos del usuario cargados:', userData);
+            
+            // Actualizar header y navegación
+            updateHeader(userData);
+            
+            // Actualizar formulario de información personal
+            updatePersonalForm(userData);
+            
+            // Actualizar avatar con iniciales reales
+            updateAvatar(userData.nombre);
+            
+            // Llamar a toggleHostTab() después de cargar los datos para asegurar que la pestaña se muestre correctamente
+            const userTypeSelect = document.getElementById('userType');
+            const hostTab = document.getElementById('hostTab');
+            if (userTypeSelect && hostTab) {
+                const userType = userTypeSelect.value;
+                if (userType === 'host' || userType === 'both') {
+                    hostTab.style.display = 'block';
+                } else {
+                    hostTab.style.display = 'none';
+                }
+            }
+        }
+        
+        // Función para actualizar el header
+        function updateHeader(userData) {
+            // Actualizar navegación principal
+            const userMenu = document.querySelector('.user-menu');
+            if (userMenu) {
+                userMenu.innerHTML = `
+                    <img src="${userData.foto || `https://placehold.co/50x50/cccccc/333333?text=${getInitials(userData.nombre)}`}" alt="Foto del usuario">
+                    <span>${userData.nombre}</span>
+                `;
+            }
+            
+            // Actualizar sidebar
+            const profileImage = document.getElementById('currentProfileImage');
+            const profileName = document.querySelector('.user-profile-summary h3');
+            const userRole = document.getElementById('userRole');
+            
+            if (profileImage) {
+                profileImage.src = userData.foto || `https://placehold.co/80x80/cccccc/333333?text=${getInitials(userData.nombre)}`;
+            }
+            
+            if (profileName) {
+                profileName.textContent = userData.nombre;
+            }
+            
+            // 1. Año dinámico basado en la fecha de creación
+            if (userRole) {
+                let creationYear = '2025'; // Valor por defecto actualizado
+                if (userData.creadoEn) {
+                    try {
+                        creationYear = new Date(userData.creadoEn).getFullYear();
+                    } catch (error) {
+                        creationYear = '2025'; // Valor por defecto si hay error
+                    }
+                } else {
+                    // Si no hay fecha de creación, usar el año actual como fallback
+                    creationYear = new Date().getFullYear();
+                }
+                userRole.textContent = `Usuario desde ${creationYear}`;
+            }
+            
+            // 2. Agregar "Mis Alojamientos" para Anfitriones
+            const isAnfitrion = userData.rol === 'ROL_Anfitrion' || userData.rol === 'Anfitrion';
+            const navList = document.querySelector('.dashboard-nav ul');
+            
+            if (navList && isAnfitrion) {
+                // Verificar si ya existe "Mis Alojamientos" para evitar duplicados
+                const existingAccommodations = Array.from(navList.querySelectorAll('li')).find(li => 
+                    li.textContent.includes('Mis Alojamientos')
+                );
+                
+                if (!existingAccommodations) {
+                    // Encontrar "Mis Reservas" para insertar después
+                    const reservationsItem = Array.from(navList.querySelectorAll('li')).find(li => 
+                        li.textContent.includes('Mis Reservas')
+                    );
+                    
+                    if (reservationsItem) {
+                        const accommodationsItem = document.createElement('li');
+                        accommodationsItem.innerHTML = '<a href="host_accommodations.html"><i class="fa-solid fa-house-user"></i> Mis Alojamientos</a>';
+                        reservationsItem.parentNode.insertBefore(accommodationsItem, reservationsItem.nextSibling);
+                    }
+                }
+            }
+            
+            // 3. Configurar redirecciones del menú
+            configureMenuLinks(navList);
+        }
+        
+        // Función para configurar las redirecciones del menú
+        function configureMenuLinks(navList) {
+            // Dashboard -> host_dashboard.html
+            const dashboardItem = Array.from(navList.querySelectorAll('li')).find(li => 
+                li.textContent.includes('Dashboard')
+            );
+            if (dashboardItem) {
+                dashboardItem.querySelector('a').href = 'host_dashboard.html';
+            }
+            
+            // Mis Reservas -> booking.html
+            const reservationsItem = Array.from(navList.querySelectorAll('li')).find(li => 
+                li.textContent.includes('Mis Reservas')
+            );
+            if (reservationsItem) {
+                reservationsItem.querySelector('a').href = 'booking.html';
+            }
+            
+            // Mis Alojamientos -> host_accommodations.html
+            const accommodationsItem = Array.from(navList.querySelectorAll('li')).find(li => 
+                li.textContent.includes('Mis Alojamientos')
+            );
+            if (accommodationsItem) {
+                const accommodationsLink = accommodationsItem.querySelector('a');
+                if (accommodationsLink && !accommodationsLink.href.includes('host_accommodations.html')) {
+                    accommodationsLink.href = 'host_accommodations.html';
+                }
+            }
+            
+            // Favoritos -> Mensaje informativo
+            const favoritesItem = Array.from(navList.querySelectorAll('li')).find(li => 
+                li.textContent.includes('Favoritos')
+            );
+            if (favoritesItem) {
+                const favoritesLink = favoritesItem.querySelector('a');
+                favoritesLink.href = '#';
+                favoritesLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Esta funcionalidad se implementará más adelante.');
+                });
+            }
+            
+            // Cambiar "Cerrar Sesión" por "Ir al inicio"
+            const logoutItem = Array.from(navList.querySelectorAll('li')).find(li => 
+                li.textContent.includes('Cerrar Sesión')
+            );
+            
+            if (logoutItem) {
+                logoutItem.innerHTML = '<a href="#" id="goHomeLink"><i class="fa-solid fa-home"></i> Ir al inicio</a>';
+                
+                // Agregar event listener para redirigir a index.html
+                const goHomeLink = document.getElementById('goHomeLink');
+                if (goHomeLink) {
+                    goHomeLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        window.location.href = 'index.html';
+                    });
+                }
+            }
+        }
+        
+        // Función para actualizar el formulario personal
+        function updatePersonalForm(userData) {
+            // Actualizar campos del formulario
+            const nombreCompletoField = document.getElementById('nombreCompleto');
+            const emailField = document.getElementById('email');
+            const phoneField = document.getElementById('phone');
+            const birthDateField = document.getElementById('birthDate');
+            const userTypeField = document.getElementById('userType');
+            
+            if (nombreCompletoField) nombreCompletoField.value = userData.nombre;
+            if (emailField) emailField.value = userData.email;
+            if (phoneField) phoneField.value = userData.telefono || '';
+            if (birthDateField) birthDateField.value = userData.fechaNacimiento || '';
+            
+            if (userTypeField) {
+                // Detectar si el usuario es Anfitrión
+                const isAnfitrion = userData.rol === 'ROL_Anfitrion' || userData.rol === 'Anfitrion';
+                
+                if (isAnfitrion) {
+                    // Para anfitriones, mostrar opción de anfitrión y deshabilitar el select
+                    userTypeField.innerHTML = '<option value="host" selected>Anfitrión</option>';
+                    userTypeField.disabled = true;
+                    
+                    // Agregar mensaje informativo después del selector
+                    let infoMessage = document.getElementById('userTypeInfo');
+                    if (!infoMessage) {
+                        infoMessage = document.createElement('small');
+                        infoMessage.id = 'userTypeInfo';
+                        infoMessage.style.cssText = 'color: var(--success-color); font-weight: 600; display: block; margin-top: 0.5rem;';
+                        userTypeField.parentNode.appendChild(infoMessage);
+                    }
+                    infoMessage.innerHTML = '<i class="fa-solid fa-check-circle"></i> Ya eres Anfitrión - tu rol está activo y no puede cambiar';
+                    
+                    // Activar pestaña de anfitrión
+                    const hostTab = document.getElementById('hostTab');
+                    if (hostTab) {
+                        hostTab.style.display = 'block';
+                    }
+                } else {
+                    // Para huéspedes, mostrar opciones normales
+                    userTypeField.innerHTML = `
+                        <option value="guest" selected>Huésped</option>
+                        <option value="host">Convertirme en Anfitrión</option>
+                    `;
+                    userTypeField.disabled = false;
+                    
+                    // Remover mensaje informativo si existe
+                    let infoMessage = document.getElementById('userTypeInfo');
+                    if (infoMessage) {
+                        infoMessage.remove();
+                    }
+                }
+            }
+            
+            // Actualizar imagen de perfil
+            const profilePreview = document.getElementById('profilePreview');
+            if (profilePreview) {
+                profilePreview.src = userData.foto || `https://placehold.co/150x150/cccccc/333333?text=${getInitials(userData.nombre)}`;
+            }
+        }
+        
+        // Función para actualizar el avatar
+        function updateAvatar(nombreCompleto) {
+            // Actualizar cualquier avatar que use iniciales
+            const initials = getInitials(nombreCompleto);
+            console.log('Iniciales para avatar:', initials);
+        }
+        
+        // Función para obtener iniciales (reutilizada de index.html)
+        function getInitials(name) {
+            return name.split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+        
+        // Función para guardar datos personales
+        async function savePersonalData() {
+            try {
+                const user = auth.getUser();
+                if (!user || !user.id) {
+                    throw new Error('No se encontró información del usuario');
+                }
+                
+                // Obtener datos del formulario
+                const nombre = document.getElementById('nombreCompleto').value;
+                const telefono = document.getElementById('phone').value;
+                const birthDate = document.getElementById('birthDate').value;
+                
+                // Crear FormData para el backend que espera multipart/form-data
+                const formData = new FormData();
+                
+                // Crear el objeto de usuario para la parte "usuario"
+                const usuarioData = {
+                    nombre: nombre,
+                    telefono: telefono,
+                    foto: null, // No se actualiza la foto aquí
+                    fechaNacimiento: birthDate || undefined // Enviar undefined si está vacío
+                };
+                
+                formData.append('usuario', new Blob([JSON.stringify(usuarioData)], { type: 'application/json' }));
+                
+                // Enviar datos al backend
+                const response = await fetch(`http://localhost:8080/api/usuarios/${user.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${auth.getToken()}`
+                    },
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error del backend:', errorText);
+                    throw new Error(`Error al actualizar los datos: ${response.status}`);
+                }
+                
+                alert('Información personal actualizada correctamente');
+                
+                // Recargar datos para actualizar la UI
+                await loadUserData();
+                
+            } catch (error) {
+                console.error('Error al guardar datos personales:', error);
+                alert('Error al actualizar tu información. Por favor intenta nuevamente.');
+            }
+        }
+        
+        // Función para guardar datos de anfitrión (convertir o actualizar según el rol)
+        async function saveHostData() {
+            try {
+                const user = auth.getUser();
+                if (!user || !user.id) {
+                    throw new Error('No se encontró información del usuario');
+                }
+                
+                // Verificar si ya es Anfitrión usando los datos cargados en la UI
+                const userTypeField = document.getElementById('userType');
+                const isAnfitrion = userTypeField && userTypeField.disabled;
+                
+                // Obtener datos del formulario de anfitrión
+                const hostDescription = document.getElementById('hostDescription').value.trim();
+                
+                // Validar que se complete la descripción
+                if (!hostDescription) {
+                    alert('Por favor completa la descripción como anfitrión');
+                    return;
+                }
+                
+                // Mostrar loading state
+                const submitButton = document.querySelector('#hostForm button[type="submit"]');
+                var originalButtonText = submitButton.innerHTML;
+                submitButton.disabled = true;
+                
+                if (isAnfitrion) {
+                    // CASO 1: Ya es Anfitrión - Actualizar perfil existente
+                    submitButton.innerHTML = '<span class="loading-spinner"></span> Actualizando perfil...';
+                    
+                    const updateData = {
+                        descripcion: hostDescription,
+                        documentos: [] // Por ahora vacío, se puede expandir después
+                    };
+                    
+                    const response = await fetch(`http://localhost:8080/api/usuarios/anfitrion/${user.id}`, {
+                        method: 'PUT',
+                        headers: auth.getAuthHeaders(),
+                        body: JSON.stringify(updateData)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && !result.error) {
+                        alert('¡Perfil de anfitrión actualizado correctamente!');
+                    } else {
+                        const errorMessage = result.mensaje || 'Error al actualizar el perfil. Intenta nuevamente.';
+                        alert(errorMessage);
+                    }
+                    
+                } else {
+                    // CASO 2: Es Huésped - Convertir a Anfitrión
+                    submitButton.innerHTML = '<span class="loading-spinner"></span> Convirtiendo en Anfitrión...';
+                    
+                    // Confirmación antes de convertir a anfitrión
+                    const confirmacion = confirm('¿Estás seguro de que quieres convertirte en Anfitrión? Esta acción cambiará tu rol en el sistema y te permitirá publicar alojamientos.');
+                    if (!confirmacion) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalButtonText;
+                        return;
+                    }
+                    
+                    const documentoLegal = document.getElementById('cedula').files.length > 0 ? 'Cédula de Ciudadanía adjunta' : '';
+                    
+                    const conversionData = {
+                        usuarioId: user.id,
+                        sobreMi: hostDescription,
+                        documentoLegal: documentoLegal
+                    };
+                    
+                    const response = await fetch('http://localhost:8080/api/usuarios/anfitrion', {
+                        method: 'POST',
+                        headers: auth.getAuthHeaders(),
+                        body: JSON.stringify(conversionData)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && !result.error) {
+                        // Éxito: recargar datos del usuario para actualizar UI
+                        alert('¡Felicidades! Ahora eres Anfitrión en CloudHouse 🎉');
+                        
+                        // Recargar datos para actualizar el rol en la UI
+                        await loadUserData();
+                        
+                        // Actualizar el selector de tipo de usuario
+                        const userTypeField = document.getElementById('userType');
+                        if (userTypeField) {
+                            userTypeField.value = 'host';
+                        }
+                        
+                        // Asegurar que la pestaña de anfitrión esté visible
+                        const hostTab = document.getElementById('hostTab');
+                        if (hostTab) {
+                            hostTab.style.display = 'block';
+                        }
+                        
+                        // Cambiar a la pestaña de anfitrión
+                        document.querySelector('.tab-link[data-tab="host"]').click();
+                        
+                    } else {
+                        const errorMessage = result.mensaje || 'Error al convertir en anfitrión. Intenta nuevamente.';
+                        alert(errorMessage);
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error en operación de anfitrión:', error);
+                
+                // Manejar diferentes tipos de errores
+                let errorMessage = 'Error al procesar la solicitud. Intenta nuevamente.';
+                
+                if (error.message.includes('403')) {
+                    errorMessage = 'No tienes permisos para realizar esta acción.';
+                } else if (error.message.includes('409')) {
+                    errorMessage = 'Ya eres un anfitrión o hay un conflicto con tus datos.';
+                } else if (error.message.includes('422')) {
+                    errorMessage = 'Datos inválidos. Por favor verifica la información.';
+                } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage = 'Error de conexión. Verifica que el servidor esté disponible.';
+                }
+                
+                alert(errorMessage);
+            } finally {
+                // Restaurar estado del botón
+                const submitButton = document.querySelector('#hostForm button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                }
+            }
+        }
+        
+        // Función para cambiar contraseña
+        async function changePassword() {
+            const submitButton = document.querySelector('#securityForm button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            
+            try {
+                const user = auth.getUser();
+                if (!user || !user.id) {
+                    throw new Error('No se encontró información del usuario');
+                }
+                
+                // Obtener datos del formulario
                 const currentPassword = document.getElementById('currentPassword').value;
                 const newPassword = document.getElementById('newPassword').value;
                 const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+                
+                // Validaciones frontend completas (sin mostrar loading aún)
+                if (!currentPassword || !newPassword || !confirmNewPassword) {
+                    alert('Por favor completa todos los campos');
+                    return;
+                }
                 
                 if (newPassword !== confirmNewPassword) {
                     alert('Las contraseñas no coinciden');
@@ -548,328 +1119,87 @@
                     return;
                 }
                 
-                alert('Configuración de seguridad actualizada correctamente');
-            });
-        });
-
-        async function loadUserData() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (user && user.id) {
-                try {
-                    // Cargar datos completos del usuario desde el backend
-                    const response = await fetch(`http://localhost:8080/api/usuarios/${user.id}`, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        console.log('Respuesta completa del backend:', result);
-                        
-                        // El backend devuelve los datos en result.data (singular)
-                        let userData = result.data;
-                        
-                        if (userData) {
-                            // Normalizar el rol para que coincida con el formato esperado
-                            if (userData.rol && userData.rol.startsWith('ROL_')) {
-                                userData.rol = userData.rol.replace('ROL_', '');
-                            }
-                            
-                            console.log('Datos normalizados del usuario:', userData);
-                            
-                            // Actualizar localStorage con datos completos
-                            localStorage.setItem('user', JSON.stringify(userData));
-                            
-                            // Cargar datos en el formulario
-                            populateForm(userData);
-                        } else {
-                            console.error('Datos de usuario no encontrados en la respuesta');
-                            populateForm(user);
-                        }
-                    } else {
-                        console.error('Error en respuesta del backend:', response.status);
-                        // Si falla la carga del backend, usar datos del localStorage
-                        populateForm(user);
-                    }
-                } catch (error) {
-                    console.error('Error cargando datos del usuario:', error);
-                    // Usar datos del localStorage como fallback
-                    populateForm(user);
-                }
-            } else {
-                console.error('No hay usuario en localStorage o no tiene ID');
-            }
-        }
-
-        function populateForm(user) {
-            if (!user) {
-                console.error('Usuario es undefined o null');
-                return;
-            }
-
-            console.log('Datos del usuario a cargar:', user);
-
-            // Actualizar nombre del usuario en la interfaz
-            const userElements = document.querySelectorAll('.user-profile-summary h3, header .user-menu span');
-            userElements.forEach(element => {
-                element.textContent = user.nombre || 'Usuario';
-            });
-
-            // Actualizar rol del usuario
-            const roleElement = document.getElementById('userRole');
-            if (roleElement) {
-                if (user.rol === 'Anfitrion') {
-                    roleElement.textContent = 'Anfitrión desde 2023';
-                    // Mostrar pestaña de anfitrión si es anfitrión
-                    const hostTab = document.getElementById('hostTab');
-                    if (hostTab) {
-                        hostTab.style.display = 'block';
-                    }
-                } else {
-                    roleElement.textContent = 'Huésped desde 2023';
-                }
-            }
-
-            // Actualizar selector de tipo de usuario
-            const userTypeSelect = document.getElementById('userType');
-            if (userTypeSelect) {
-                if (user.rol === 'Anfitrion') {
-                    // Para anfitriones, mostrar opción de anfitrión y deshabilitar el select
-                    userTypeSelect.innerHTML = '<option value="host" selected>Anfitrión</option>';
-                    userTypeSelect.disabled = true;
-                    // Activar pestaña de anfitrión
-                    const hostTab = document.getElementById('hostTab');
-                    if (hostTab) {
-                        hostTab.style.display = 'block';
-                    }
-                } else {
-                    // Para huéspedes, mostrar opciones normales
-                    userTypeSelect.innerHTML = `
-                        <option value="guest" selected>Huésped</option>
-                        <option value="host">Convertirme en Anfitrión</option>
-                    `;
-                    userTypeSelect.disabled = false;
-                }
-            }
-
-            // Actualizar texto del enlace de reservas según el rol
-            const reservationsLink = document.getElementById('reservationsLink');
-            if (reservationsLink) {
-                if (user.rol === 'Anfitrion') {
-                    reservationsLink.innerHTML = '<i class="fa-solid fa-house-user"></i> Mis Alojamientos';
-                } else {
-                    reservationsLink.innerHTML = '<i class="fa-solid fa-calendar-check"></i> Mis Reservas';
-                }
-            }
-
-            // Cargar datos del formulario
-            if (user.nombre) {
-                const nameParts = user.nombre.split(' ');
-                document.getElementById('firstName').value = nameParts[0] || '';
-                document.getElementById('lastName').value = nameParts.slice(1).join(' ') || '';
-            }
-            
-            if (user.email) {
-                document.getElementById('email').value = user.email;
-            }
-            
-            if (user.telefono) {
-                document.getElementById('phone').value = user.telefono;
-            }
-            
-            if (user.fechaNacimiento) {
-                const birthDate = new Date(user.fechaNacimiento).toISOString().split('T')[0];
-                document.getElementById('birthDate').value = birthDate;
-            }
-            
-            if (user.foto) {
-                document.getElementById('profilePreview').src = user.foto;
-                document.getElementById('currentProfileImage').src = user.foto;
-            }
-        }
-
-        async function convertToHost() {
-            const submitButton = document.getElementById('hostForm').querySelector('button[type="submit"]');
-            const originalText = submitButton.innerHTML;
-
-            // Mostrar loading
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="loading-spinner"></span> Convirtiendo...';
-
-            try {
-                // Obtener datos del formulario
-                const cedulaFile = getFileData(document.getElementById('cedula'));
-                const rutFile = getFileData(document.getElementById('rut'));
-                
-                // Construir el campo documentoLegal en el formato esperado
-                let documentoLegal = '';
-                if (cedulaFile) {
-                    documentoLegal += `Cédula: ${cedulaFile}`;
-                }
-                if (rutFile) {
-                    if (documentoLegal) documentoLegal += '; ';
-                    documentoLegal += `RUT: ${rutFile}`;
-                }
-
-                const formData = {
-                    descripcion: document.getElementById('hostDescription').value.trim(),
-                    anosExperiencia: document.getElementById('hostExperience').value,
-                    tiempoRespuesta: document.getElementById('responseTime').value,
-                    serviciosEspeciales: getSelectedServices(),
-                    informacionBancaria: document.getElementById('bankAccount').value.trim(),
-                    documentoLegal: documentoLegal
-                };
-
-                // Obtener ID del usuario desde localStorage
-                const user = JSON.parse(localStorage.getItem('user'));
-                if (!user || !user.id) {
-                    throw new Error('Usuario no encontrado. Por favor inicia sesión nuevamente.');
-                }
-
-                // Enviar petición al backend
-                const response = await fetch('http://localhost:8080/api/usuarios/anfitrion', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    // Actualizar datos del usuario en localStorage
-                    user.rol = 'Anfitrion';
-                    user.esAnfitrion = true;
-                    localStorage.setItem('user', JSON.stringify(user));
-
-                    alert('¡Felicidades! Has sido convertido a anfitrión. Ahora puedes publicar alojamientos.');
-                    window.location.reload(); // Recargar para mostrar cambios
-                } else {
-                    alert('Error: ' + (result.datos || result.mensaje || 'Error desconocido'));
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error de conexión. Por favor verifica que el servidor backend esté ejecutándose.');
-            } finally {
-                // Restaurar botón
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalText;
-            }
-        }
-
-        function getSelectedServices() {
-            const checkboxes = document.querySelectorAll('#host input[type="checkbox"]:checked');
-            const services = [];
-            checkboxes.forEach(checkbox => {
-                services.push(checkbox.id);
-            });
-            return services.join(', ');
-        }
-
-        function getFileData(fileInput) {
-            const file = fileInput.files[0];
-            if (file) {
-                // Para simplificar, solo guardamos el nombre del archivo
-                // En una implementación real, subiríamos el archivo al servidor
-                return file.name;
-            }
-            return '';
-        }
-
-        async function updatePersonalInfo() {
-            const submitButton = document.getElementById('personalForm').querySelector('button[type="submit"]');
-            const originalText = submitButton.innerHTML;
-
-            // Mostrar loading
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="loading-spinner"></span> Guardando...';
-
-            try {
-                // Obtener datos del usuario desde localStorage
-                const user = JSON.parse(localStorage.getItem('user'));
-                if (!user || !user.id) {
-                    throw new Error('Usuario no encontrado. Por favor inicia sesión nuevamente.');
-                }
-
-                // Obtener valores del formulario
-                const firstName = document.getElementById('firstName').value.trim();
-                const lastName = document.getElementById('lastName').value.trim();
-                const phone = document.getElementById('phone').value.trim();
-                const birthDate = document.getElementById('birthDate').value;
-                const profileImageFile = document.getElementById('profileImage').files[0];
-
-                // Validar campos requeridos
-                if (!firstName || !lastName || !phone) {
-                    alert('Por favor completa todos los campos obligatorios.');
+                if (currentPassword === newPassword) {
+                    alert('La nueva contraseña no puede ser igual a la actual');
                     return;
                 }
-
-                // Construir FormData para multipart/form-data
-                const formData = new FormData();
                 
-                // Crear el objeto de usuario para la parte "usuario"
-                const usuarioData = {
-                    nombre: `${firstName} ${lastName}`,
-                    telefono: phone,
-                    foto: '', // Se llenará si hay nueva imagen
-                    fechaNacimiento: birthDate || null
+                // Solo ahora mostrar loading state (después de validar que todo esté correcto)
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="loading-spinner"></span> Cambiando contraseña...';
+                
+                // Preparar datos para el backend
+                const changeData = {
+                    contrasenaActual: currentPassword,
+                    contrasenaNueva: newPassword
                 };
-
-                formData.append('usuario', new Blob([JSON.stringify(usuarioData)], { type: 'application/json' }));
                 
-                // Agregar imagen solo si se seleccionó una nueva
-                if (profileImageFile) {
-                    formData.append('foto', profileImageFile);
-                }
-
-                // Enviar petición al backend
-                const response = await fetch(`http://localhost:8080/api/usuarios/${user.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: formData
+                // Enviar solicitud al backend
+                const response = await fetch(`http://localhost:8080/api/usuarios/${user.id}/contrasena`, {
+                    method: 'PATCH',
+                    headers: auth.getAuthHeaders(),
+                    body: JSON.stringify(changeData)
                 });
-
+                
                 const result = await response.json();
-
-                if (response.ok) {
-                    // Actualizar datos del usuario en localStorage
-                    user.nombre = usuarioData.nombre;
-                    localStorage.setItem('user', JSON.stringify(user));
-
-                    // Actualizar UI inmediatamente
-                    loadUserData();
-
-                    alert('¡Información personal actualizada correctamente!');
+                
+                if (response.ok && !result.error) {
+                    // Éxito: mostrar mensaje y cerrar sesión
+                    alert('¡Contraseña cambiada exitosamente! Por seguridad, cerraremos tu sesión y deberás ingresar nuevamente.');
                     
-                    // Si se cambió la foto, actualizar las imágenes en la página
-                    if (profileImageFile) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            document.getElementById('profilePreview').src = e.target.result;
-                            document.getElementById('currentProfileImage').src = e.target.result;
-                        };
-                        reader.readAsDataURL(profileImageFile);
-                    }
+                    // Cerrar sesión y redirigir a login
+                    auth.logout();
+                    window.location.href = 'login.html';
+                    
                 } else {
-                    alert('Error: ' + (result.datos || result.mensaje || 'Error desconocido al actualizar la información'));
+                    // Error del backend - manejo mejorado
+                    let errorMessage = 'Error al cambiar la contraseña';
+                    
+                    // Manejar errores específicos con mensajes más claros
+                    if (response.status === 400) {
+                        if (result.mensaje && result.mensaje.includes('incorrecta')) {
+                            errorMessage = 'Contraseña actual incorrecta';
+                        } else if (result.mensaje && result.mensaje.includes('igual')) {
+                            errorMessage = 'La nueva contraseña no puede ser igual a la actual';
+                        } else {
+                            // Default para cualquier error 400
+                            errorMessage = 'Contraseña actual incorrecta';
+                        }
+                    } else if (response.status === 403) {
+                        errorMessage = 'No tienes permisos para realizar esta acción';
+                    } else if (response.status === 404) {
+                        errorMessage = 'Usuario no encontrado';
+                    } else if (response.status === 409) {
+                        errorMessage = 'La nueva contraseña no puede ser igual a la actual';
+                    }
+                    
+                    alert(errorMessage);
                 }
-
+                
             } catch (error) {
-                console.error('Error:', error);
-                alert('Error de conexión. Por favor verifica que el servidor backend esté ejecutándose.');
+                console.error('Error al cambiar contraseña:', error);
+                
+                // Manejar diferentes tipos de errores con mensajes específicos
+                let errorMessage = 'Error al cambiar la contraseña. Por favor intenta nuevamente.';
+                
+                if (error.message.includes('403')) {
+                    errorMessage = 'No tienes permisos para cambiar esta contraseña';
+                } else if (error.message.includes('400') || error.message.includes('incorrecta')) {
+                    errorMessage = 'Contraseña actual incorrecta';
+                } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage = 'Error de conexión. Verifica que el servidor esté disponible.';
+                }
+                
+                alert(errorMessage);
             } finally {
-                // Restaurar botón
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalText;
+                // Restaurar estado del botón
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                }
             }
         }
-
+        
         function confirmDeleteAccount() {
             if (confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
                 if (confirm('¿Realmente quieres eliminar tu cuenta? Perderás todos tus datos, reservas e historial.')) {
@@ -878,60 +1208,6 @@
                 }
             }
         }
-
-        // Configurar navegación del menú lateral
-        function setupNavigation() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            
-            // Dashboard link
-            document.getElementById('dashboardLink').addEventListener('click', function(e) {
-                e.preventDefault();
-                window.location.href = 'host_dashboard.html';
-            });
-
-            // Reservations link (dinámico según rol)
-            const reservationsLink = document.getElementById('reservationsLink');
-            reservationsLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                if (user && user.rol === 'Anfitrion') {
-                    // Para anfitriones, redirigir a alojamientos
-                    window.location.href = 'host_accommodations.html';
-                } else {
-                    // Para huéspedes, redirigir a página de reservas
-                    window.location.href = 'booking.html';
-                }
-            });
-
-            // Favorites link (temporalmente deshabilitado)
-            document.getElementById('favoritesLink').addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('La función de favoritos estará disponible próximamente.');
-            });
-
-            // Logout link
-            document.getElementById('logoutLink').addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                    // Limpiar localStorage
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('user');
-                    
-                    // Redirigir a login
-                    window.location.href = 'login.html';
-                }
-            });
-        }
-
-        // Llamar a setupNavigation después de cargar datos del usuario
-        document.addEventListener('DOMContentLoaded', function() {
-            // Primero cargar datos del usuario
-            loadUserData();
-            
-            // Luego configurar navegación
-            setupNavigation();
-        });
     </script>
 
 </body>

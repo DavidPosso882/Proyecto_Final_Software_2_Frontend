@@ -1,0 +1,231 @@
+<div class="details-container">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Cargando información del alojamiento...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="error && !isLoading">
+        <i class="fa-solid fa-exclamation-triangle"></i>
+        <h3>Error al cargar alojamiento</h3>
+        <p>{{ error }}</p>
+        <button class="btn btn-primary" (click)="retryLoad()">
+            <i class="fa-solid fa-refresh"></i> Reintentar
+        </button>
+        <button class="btn btn-secondary" (click)="goBack()">
+            <i class="fa-solid fa-arrow-left"></i> Volver a la búsqueda
+        </button>
+    </div>
+
+    <!-- Accommodation Details -->
+    <div class="accommodation-details" *ngIf="accommodation && !isLoading">
+        <!-- Header con navegación -->
+        <div class="details-header">
+            <div class="container">
+                <button class="back-btn" (click)="goBack()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+
+        <!-- Galería de imágenes -->
+        <div class="image-gallery">
+            <div class="main-image">
+                <img [src]="getCurrentImage()" [alt]="accommodation.titulo">
+                <button class="gallery-nav prev" (click)="prevImage()" *ngIf="hasMultipleImages()">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="gallery-nav next" (click)="nextImage()" *ngIf="hasMultipleImages()">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="thumbnail-gallery" *ngIf="hasMultipleImages()">
+                <div class="thumbnail" 
+                     *ngFor="let image of accommodation!.imagenes; let i = index"
+                     [class.active]="i === currentImageIndex"
+                     (click)="selectImage(i)">
+                    <img [src]="image" [alt]="`Imagen ${i + 1} de ${accommodation!.titulo}`">
+                </div>
+            </div>
+        </div>
+
+        <!-- Información principal -->
+        <div class="accommodation-info">
+            <div class="container">
+                <div class="info-grid">
+                    <div class="info-main">
+                        <div class="title-section">
+                            <h1>{{ accommodation.titulo }}</h1>
+                            <div class="location-info">
+                                <i class="fa-solid fa-map-marker-alt"></i>
+                                <span>{{ accommodation.direccion?.ciudad }}, {{ accommodation.direccion?.departamento || '' }}</span>
+                            </div>
+                            <div class="rating-info">
+                                <div class="stars">
+                                    <i class="fa-solid fa-star" *ngFor="let star of getStarRating(accommodation.promedioCalificaciones || 0)"></i>
+                                    <i class="fa-regular fa-star" *ngFor="let star of getStarRating(5 - (accommodation.promedioCalificaciones || 0))"></i>
+                                </div>
+                                <span>{{ (accommodation.promedioCalificaciones || 0).toFixed(1) }} ({{ accommodation.numeroCalificaciones || 0 }} reseñas)</span>
+                            </div>
+                        </div>
+
+                        <div class="description-section">
+                            <h3>Descripción</h3>
+                            <p>{{ accommodation.descripcion }}</p>
+                        </div>
+
+                        <div class="services-section">
+                            <h3>Servicios</h3>
+                            <div class="services-grid">
+                                <div class="service-item" *ngFor="let servicio of accommodation.servicios">
+                                    <i class="fa-solid fa-check"></i>
+                                    <span>{{ servicio.nombre }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="capacity-section">
+                            <h3>Capacidad</h3>
+                            <div class="capacity-info">
+                                <div class="capacity-item">
+                                    <i class="fa-solid fa-users"></i>
+                                    <span>{{ accommodation.capacidad }} huéspedes</span>
+                                </div>
+                                <div class="capacity-item">
+                                    <i class="fa-solid fa-bed"></i>
+                                    <span>{{ accommodation.numeroHabitaciones }} habitaciones</span>
+                                </div>
+                                <div class="capacity-item">
+                                    <i class="fa-solid fa-bath"></i>
+                                    <span>{{ accommodation.numeroBanos }} baños</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-sidebar">
+                        <!-- Tarjeta de reserva -->
+                        <div class="booking-card">
+                            <div class="price-info">
+                                <span class="price-label">Precio por noche</span>
+                                <span class="price">{{ formatPrice(accommodation.precioPorNoche) }}</span>
+                            </div>
+
+                            <form class="booking-form" (ngSubmit)="onBookingSubmit()">
+                                <div class="form-group">
+                                    <label for="checkin">Check-in</label>
+                                    <input type="date" id="checkin" [(ngModel)]="bookingForm.checkin" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="checkout">Check-out</label>
+                                    <input type="date" id="checkout" [(ngModel)]="bookingForm.checkout" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="huespedes">Huéspedes</label>
+                                    <input type="number" id="huespedes" [(ngModel)]="bookingForm.huespedes" 
+                                           min="1" max="{{ accommodation.capacidad }}" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-full">
+                                    Reservar ahora
+                                </button>
+                            </form>
+
+                            <div class="booking-actions">
+                                <button class="btn btn-outline" (click)="toggleFavorite()">
+                                    <i class="fa-regular fa-heart"></i>
+                                    Agregar a favoritos
+                                </button>
+                                <button class="btn btn-outline" (click)="contactHost()">
+                                    <i class="fa-solid fa-message"></i>
+                                    Contactar anfitrión
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reseñas -->
+        <div class="reviews-section">
+            <div class="container">
+                <div class="reviews-header">
+                    <h2>Reseñas</h2>
+                    <button class="btn btn-primary" (click)="toggleReviewForm()">
+                        <i class="fa-solid fa-plus"></i>
+                        Escribir reseña
+                    </button>
+                </div>
+
+                <!-- Formulario de reseña -->
+                <div class="review-form" *ngIf="showReviewForm">
+                    <h3>Escribe tu reseña</h3>
+                    <form (ngSubmit)="submitReview()">
+                        <div class="form-group">
+                            <label>Calificación</label>
+                            <div class="rating-input">
+                                <i class="fa-star" 
+                                   [class.fa-solid]="reviewForm.calificacion >= star"
+                                   [class.fa-regular]="reviewForm.calificacion < star"
+                                   (click)="reviewForm.calificacion = star"
+                                   *ngFor="let star of [1,2,3,4,5]"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="comentario">Comentario</label>
+                            <textarea id="comentario" [(ngModel)]="reviewForm.comentario" 
+                                      rows="4" placeholder="Comparte tu experiencia..." required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" [disabled]="isSubmittingReview">
+                                <span *ngIf="!isSubmittingReview">Enviar reseña</span>
+                                <span *ngIf="isSubmittingReview">Enviando...</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" (click)="toggleReviewForm()">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de reseñas -->
+                <div class="reviews-list">
+                    <div class="loading-reviews" *ngIf="isLoadingReviews">
+                        <div class="spinner"></div>
+                        <p>Cargando reseñas...</p>
+                    </div>
+
+                    <div class="no-reviews" *ngIf="!isLoadingReviews && reviews.length === 0">
+                        <i class="fa-solid fa-comment-slash"></i>
+                        <p>Aún no hay reseñas para este alojamiento.</p>
+                    </div>
+
+                    <div class="review-item" *ngFor="let review of reviews">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <strong>{{ review.huesped?.name || 'Anónimo' }}</strong>
+                                <span class="review-date">{{ formatDate(review.fechaCreacion) }}</span>
+                            </div>
+                            <div class="review-rating">
+                                <i class="fa-solid fa-star" *ngFor="let star of getStarRating(review.calificacion)"></i>
+                                <i class="fa-regular fa-star" *ngFor="let star of getStarRating(5 - review.calificacion)"></i>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>{{ review.comentario }}</p>
+                        </div>
+                        <div class="review-response" *ngIf="review.respuesta">
+                            <div class="response-header">
+                                <strong>Respuesta del anfitrión</strong>
+                                <span class="response-date">{{ formatDate(review.fechaRespuesta || '') }}</span>
+                            </div>
+                            <p>{{ review.respuesta }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

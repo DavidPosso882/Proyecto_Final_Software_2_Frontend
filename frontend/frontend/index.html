@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViviGo - Tu próximo destino</title>
+    <title>CloudHouse - Tu próximo destino</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="auth.ts"></script>
+    <script type="module" src="index.ts"></script>
 </head>
 <body>
 
@@ -18,14 +20,10 @@
                 <div class="logo-icon">
                     <i class="fa-solid fa-house-chimney logo-house"></i>
                 </div>
-                <span class="logo-text">ViviGo</span>
+                <span class="logo-text">CloudHouse</span>
             </a>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#">Conviértete en Anfitrión</a></li>
-                    <li><a href="login.html" class="btn btn-secondary">Iniciar Sesión</a></li>
-                    <li><a href="register.html" class="btn btn-primary">Regístrate</a></li>
-                </ul>
+            <nav class="main-nav" id="mainNav">
+                
             </nav>
         </div>
     </header>
@@ -72,62 +70,13 @@
         <section class="popular-accommodations">
             <div class="container">
                 <h2>Alojamientos Populares</h2>
-                <div class="accommodations-grid">
-                    <div class="accommodation-card">
-                        <div class="card-image">
-                            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800&auto=format&fit=crop" alt="Villa con Piscina en la Montaña">
-                            <div class="favorite-icon"><i class="fa-regular fa-heart"></i></div>
-                        </div>
-                        <div class="card-info">
-                            <h3>Villa con Piscina en la Montaña</h3>
-                            <p class="location">La Calera, Cundinamarca</p>
-                            <div class="rating">
-                                <i class="fa-solid fa-star"></i> 4.92 (120)
-                            </div>
-                            <p class="price"><strong>$450,000 COP</strong> / noche</p>
-                        </div>
+                <div class="accommodations-container" id="accommodationsContainer">
+                    <div class="loading-state" id="loadingState">
+                        <div class="spinner"></div>
+                        <p>Cargando alojamientos...</p>
                     </div>
-                    <div class="accommodation-card">
-                        <div class="card-image">
-                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800&auto=format&fit=crop" alt="Apartamento Moderno en el Centro">
-                            <div class="favorite-icon"><i class="fa-regular fa-heart"></i></div>
-                        </div>
-                        <div class="card-info">
-                            <h3>Apartamento Moderno en el Centro</h3>
-                            <p class="location">Bogotá D.C., Chapinero</p>
-                            <div class="rating">
-                                <i class="fa-solid fa-star"></i> 4.85 (250)
-                            </div>
-                            <p class="price"><strong>$280,000 COP</strong> / noche</p>
-                        </div>
-                    </div>
-                    <div class="accommodation-card">
-                        <div class="card-image">
-                            <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=800&auto=format&fit=crop" alt="Cabaña Rústica junto al Lago">
-                            <div class="favorite-icon"><i class="fa-regular fa-heart"></i></div>
-                        </div>
-                        <div class="card-info">
-                            <h3>Cabaña Rústica junto al Lago</h3>
-                            <p class="location">Guatavita, Cundinamarca</p>
-                            <div class="rating">
-                                <i class="fa-solid fa-star"></i> 4.98 (95)
-                            </div>
-                            <p class="price"><strong>$350,000 COP</strong> / noche</p>
-                        </div>
-                    </div>
-                     <div class="accommodation-card">
-                        <div class="card-image">
-                            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop" alt="Loft Industrial con Vistas">
-                            <div class="favorite-icon"><i class="fa-regular fa-heart"></i></div>
-                        </div>
-                        <div class="card-info">
-                            <h3>Loft Industrial con Vistas</h3>
-                            <p class="location">Medellín, El Poblado</p>
-                            <div class="rating">
-                                <i class="fa-solid fa-star"></i> 4.90 (180)
-                            </div>
-                            <p class="price"><strong>$320,000 COP</strong> / noche</p>
-                        </div>
+                    <div class="accommodations-grid" id="accommodationsGrid" style="display: none;">
+                        <!-- Los alojamientos se cargarán dinámicamente aquí -->
                     </div>
                 </div>
             </div>
@@ -138,7 +87,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>ViviGo</h4>
+                    <h4>CloudHouse</h4>
                     <ul>
                         <li><a href="#">Sobre Nosotros</a></li>
                         <li><a href="#">Prensa</a></li>
@@ -170,53 +119,276 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 ViviGo. Todos los derechos reservados.</p>
+                <p>&copy; 2025 CloudHouse. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // SLIDESHOW SÚPER SIMPLE - FUNCIONARÁ 100%
-        console.log('Iniciando slideshow...');
-        
-        let currentSlide = 0;
-        const totalSlides = 5;
-        
-        function showSlide(index) {
-            // Remover active de todos
-            for (let i = 1; i <= totalSlides; i++) {
-                const slide = document.querySelector('.slide-' + i);
-                if (slide) {
-                    slide.classList.remove('active');
-                }
-            }
-            
-            // Agregar active al slide actual
-            const activeSlide = document.querySelector('.slide-' + (index + 1));
-            if (activeSlide) {
-                activeSlide.classList.add('active');
-                console.log('Mostrando slide:', index + 1);
-            }
-        }
-        
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            showSlide(currentSlide);
-        }
-        
-        // Esperar a que cargue la página
-        window.addEventListener('load', function() {
-            console.log('Página cargada, iniciando slideshow');
-            
-            // Mostrar primer slide
-            showSlide(0);
-            
-            // Cambiar cada 4 segundos
-            setInterval(nextSlide, 4000);
-            
-            console.log('Slideshow configurado - cambio cada 4 segundos');
-        });
+        // La lógica ahora está en index.ts (TypeScript)
+        console.log('CloudHouse Frontend - TypeScript Version');
     </script>
+    
+    <style>
+        .user-welcome {
+            color: var(--primary-color) !important;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background-color: var(--light-green);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .user-welcome:hover {
+            background-color: var(--primary-color);
+            color: var(--white-color) !important;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+        }
+        
+        /* Avatar de Usuario */
+        .user-avatar {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .avatar-initials {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(46, 139, 87, 0.3);
+        }
+        
+        .avatar-initials:hover {
+            background-color: var(--accent-color);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(46, 139, 87, 0.4);
+        }
+        
+        /* Menú Dropdown */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background-color: var(--white-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-color);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .user-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid transparent;
+        }
+        
+        .user-dropdown a:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .user-dropdown a:last-child {
+            border-radius: 0 0 12px 12px;
+            border-bottom: none;
+        }
+        
+        .user-dropdown a:hover {
+            background-color: var(--light-green);
+            color: var(--primary-color);
+        }
+        
+        .user-dropdown a i {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .user-dropdown {
+                right: -50px;
+                min-width: 180px;
+            }
+
+            .avatar-initials {
+                width: 36px;
+                height: 36px;
+                font-size: 12px;
+            }
+        }
+
+        /* Estilos para alojamientos dinámicos */
+        .accommodations-container {
+            min-height: 400px;
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-green);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .accommodations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .accommodation-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .accommodation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .favorite-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .favorite-icon:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .card-info {
+            padding: 1.5rem;
+        }
+
+        .card-info h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+
+        .location {
+            color: var(--text-color);
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .location i {
+            color: var(--primary-color);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .rating i {
+            color: #ffd700;
+        }
+
+        .price {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .accommodations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 
 </body>
 </html>

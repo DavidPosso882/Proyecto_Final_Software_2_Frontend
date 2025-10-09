@@ -9,8 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/style.css">
-    <script type="module" src="auth.ts"></script>
-    <script type="module" src="index.ts"></script>
+    <script src="auth.js"></script>
 </head>
 <body>
 
@@ -87,7 +86,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>CloudHouse</h4>
+                    <h4>ViviGo</h4>
                     <ul>
                         <li><a href="#">Sobre Nosotros</a></li>
                         <li><a href="#">Prensa</a></li>
@@ -119,14 +118,281 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 CloudHouse. Todos los derechos reservados.</p>
+                <p>&copy; 2025 ViviGo. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // La lógica ahora está en index.ts (TypeScript)
-        console.log('CloudHouse Frontend - TypeScript Version');
+        // AUTENTICACIÓN Y NAVEGACIÓN DINÁMICA
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando autenticación...');
+            
+            // Verificar autenticación y actualizar UI
+            updateNavigation();
+            
+            // Verificar si el token está expirado
+            if (auth.isAuthenticated() && auth.isTokenExpired()) {
+                console.log('Token expirado, cerrando sesión...');
+                auth.logout();
+            }
+        });
+        
+        function updateNavigation() {
+            const mainNav = document.getElementById('mainNav');
+            const token = auth.getToken();
+            const user = auth.getUser();
+            const isAuth = auth.isAuthenticated();
+            
+            if (isAuth) {
+                // Usuario logueado - mostrar navegación personalizada
+                const isHost = auth.isHost();
+                const initials = getInitials(user.name);
+
+                mainNav.innerHTML = `
+                    <ul>
+                        <li><a href="#" class="user-welcome">¡Hola, ${user.name}!</a></li>
+                        <li>
+                            <div class="user-avatar" onclick="toggleUserMenu()">
+                                <span class="avatar-initials">${initials}</span>
+                                <div class="user-dropdown" id="userDropdown">
+                                    <a href="#" onclick="editProfile()">
+                                        <i class="fa-solid fa-user"></i>
+                                        Editar Perfil
+                                    </a>
+                                    <a href="#" onclick="auth.logout()">
+                                        <i class="fa-solid fa-right-from-bracket"></i>
+                                        Cerrar Sesión
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                `;
+            } else {
+                // Usuario no logueado - mostrar navegación pública
+                mainNav.innerHTML = `
+                    <ul>
+                        <li><a href="login.html" class="btn btn-secondary">Iniciar Sesión</a></li>
+                        <li><a href="register.html" class="btn btn-primary">Regístrate</a></li>
+                    </ul>
+                `;
+            }
+        }
+        
+        // Función para extraer iniciales del nombre
+        function getInitials(name) {
+            return name.split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+        
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        }
+        
+        // Función para editar perfil
+        function editProfile() {
+            // Cerrar el menú dropdown
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+            
+            // Redirigir a la página de edición de perfil
+            window.location.href = 'profile_edit.html';
+        }
+        
+        // Cerrar menú al hacer clic fuera de él
+        document.addEventListener('click', function(event) {
+            const avatar = document.querySelector('.user-avatar');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (avatar && dropdown && !avatar.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+        
+        // SLIDESHOW SÚPER SIMPLE - FUNCIONARÁ 100%
+        console.log('Iniciando slideshow...');
+        
+        let currentSlide = 0;
+        const totalSlides = 5;
+        
+        function showSlide(index) {
+            // Remover active de todos
+            for (let i = 1; i <= totalSlides; i++) {
+                const slide = document.querySelector('.slide-' + i);
+                if (slide) {
+                    slide.classList.remove('active');
+                }
+            }
+            
+            // Agregar active al slide actual
+            const activeSlide = document.querySelector('.slide-' + (index + 1));
+            if (activeSlide) {
+                activeSlide.classList.add('active');
+                console.log('Mostrando slide:', index + 1);
+            }
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+        
+        // Función para cargar alojamientos
+        async function loadAccommodations() {
+            const loadingState = document.getElementById('loadingState');
+            const accommodationsGrid = document.getElementById('accommodationsGrid');
+
+            try {
+                // Mostrar loading
+                loadingState.style.display = 'flex';
+                accommodationsGrid.style.display = 'none';
+
+                // Hacer la petición a la API
+                const response = await fetch('http://localhost:8080/api/alojamientos?pagina=0', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al cargar alojamientos');
+                }
+
+                const result = await response.json();
+                const accommodations = result.data || [];
+
+                // Ocultar loading
+                loadingState.style.display = 'none';
+
+                if (accommodations.length === 0) {
+                    accommodationsGrid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: var(--text-color);">
+                            <i class="fa-solid fa-home" style="font-size: 4rem; color: var(--light-green); margin-bottom: 1rem;"></i>
+                            <h3>No hay alojamientos disponibles</h3>
+                            <p>Los alojamientos aparecerán aquí cuando los anfitriones los publiquen.</p>
+                        </div>
+                    `;
+                    accommodationsGrid.style.display = 'grid';
+                } else {
+                    accommodationsGrid.innerHTML = accommodations.map(accommodation => `
+                        <div class="accommodation-card" onclick="viewAccommodation(${accommodation.id})">
+                            <div class="card-image">
+                                <img src="${accommodation.imagenPrincipal || 'https://placehold.co/400x200/cccccc/333333?text=Alojamiento'}" alt="${accommodation.titulo}">
+                                <div class="favorite-icon" onclick="event.stopPropagation(); toggleFavorite(${accommodation.id})">
+                                    <i class="fa-regular fa-heart"></i>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <h3>${accommodation.titulo}</h3>
+                                <p class="location">
+                                    <i class="fa-solid fa-map-marker-alt"></i>
+                                    <span>${accommodation.direccion ? `${accommodation.direccion.ciudad}, ${accommodation.direccion.departamento || ''}` : 'Ubicación no especificada'}</span>
+                                </p>
+                                <div class="rating">
+                                    <i class="fa-solid fa-star"></i>
+                                    <span>${accommodation.promedioCalificaciones?.toFixed(1) || '0.0'} (${accommodation.numeroCalificaciones || 0})</span>
+                                </div>
+                                <p class="price"><strong>$${accommodation.precioPorNoche?.toFixed(0) || '0'} COP</strong> / noche</p>
+                            </div>
+                        </div>
+                    `).join('');
+                    accommodationsGrid.style.display = 'grid';
+                }
+
+            } catch (error) {
+                console.error('Error al cargar alojamientos:', error);
+                loadingState.style.display = 'none';
+                accommodationsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: var(--danger-color);">
+                        <i class="fa-solid fa-exclamation-triangle" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                        <h3>Error al cargar alojamientos</h3>
+                        <p>No pudimos cargar los alojamientos. Por favor intenta nuevamente.</p>
+                        <button class="btn btn-primary" onclick="loadAccommodations()" style="margin-top: 1rem;">
+                            <i class="fa-solid fa-refresh"></i> Reintentar
+                        </button>
+                    </div>
+                `;
+                accommodationsGrid.style.display = 'grid';
+            }
+        }
+
+        // Función para ver detalles del alojamiento
+        function viewAccommodation(id) {
+            // Por ahora redirigir a una página de detalles (se puede implementar más adelante)
+            window.location.href = `details.html?id=${id}`;
+        }
+
+        // Función para toggle de favoritos (placeholder)
+        function toggleFavorite(id) {
+            // Implementar funcionalidad de favoritos más adelante
+            alert('Funcionalidad de favoritos se implementará próximamente');
+        }
+
+        // Función para manejar la búsqueda
+        function handleSearch() {
+            const city = document.getElementById('city').value.trim();
+            const checkin = document.getElementById('checkin').value;
+            const checkout = document.getElementById('checkout').value;
+            const guests = document.getElementById('guests').value;
+
+            // Construir parámetros de URL
+            const params = new URLSearchParams();
+
+            if (city) params.append('ciudad', city);
+            if (checkin) params.append('checkin', checkin);
+            if (checkout) params.append('checkout', checkout);
+            if (guests) params.append('huespedes', guests);
+
+            // Redirigir a search.html con parámetros
+            const searchUrl = `search.html?${params.toString()}`;
+            window.location.href = searchUrl;
+        }
+
+        // Esperar a que cargue la página
+        window.addEventListener('load', function() {
+            console.log('Página cargada, iniciando slideshow, búsqueda y carga de alojamientos');
+
+            // Mostrar primer slide
+            showSlide(0);
+
+            // Cambiar cada 4 segundos
+            setInterval(nextSlide, 4000);
+
+            // Configurar evento del botón de búsqueda
+            const searchButton = document.querySelector('.btn-search');
+            if (searchButton) {
+                searchButton.addEventListener('click', handleSearch);
+            }
+
+            // Permitir búsqueda con Enter en los inputs
+            const inputs = ['city', 'checkin', 'checkout', 'guests'];
+            inputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('keypress', function(event) {
+                        if (event.key === 'Enter') {
+                            handleSearch();
+                        }
+                    });
+                }
+            });
+
+            // Cargar alojamientos
+            loadAccommodations();
+
+            console.log('Slideshow, búsqueda y carga de alojamientos configurados');
+        });
     </script>
     
     <style>

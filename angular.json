@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "CloudHouse_Frontend": {
+    "ViviGo_Frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -56,10 +56,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "CloudHouse_Frontend:build:production"
+              "buildTarget": "ViviGo_Frontend:build:production"
             },
             "development": {
-              "buildTarget": "CloudHouse_Frontend:build:development"
+              "buildTarget": "ViviGo_Frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -88,8 +88,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "8aa33a9d-e31d-4d14-929a-01ea7c347ce5"
   }
 }

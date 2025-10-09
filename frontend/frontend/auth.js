@@ -1,4 +1,4 @@
-// Utilidades de Autenticación para CloudHouse
+// Utilidades de Autenticación para ViviGo
 class AuthManager {
     constructor() {
         this.API_BASE_URL = 'http://localhost:8080';

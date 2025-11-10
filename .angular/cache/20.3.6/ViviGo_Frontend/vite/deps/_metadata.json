@@ -1,0 +1,148 @@
+{
+  "hash": "5bc71ed1",
+  "configHash": "9adb6c28",
+  "lockfileHash": "757a175d",
+  "browserHash": "6221b54c",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/.pnpm/@angular+common@20.3.5_@angular+core@20.3.5_@angular+compiler@20.3.5_rxjs@7.8.2_zone.js@0.15.1__rxjs@7.8.2/node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "e5b51a31",
+      "needsInterop": false
+    },
+    "@angular/common/http": {
+      "src": "../../../../../../node_modules/.pnpm/@angular+common@20.3.5_@angular+core@20.3.5_@angular+compiler@20.3.5_rxjs@7.8.2_zone.js@0.15.1__rxjs@7.8.2/node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "d1ee33e3",
+      "needsInterop": false
+    },
+    "@angular/common/locales/es": {
+      "src": "../../../../../../node_modules/.pnpm/@angular+common@20.3.5_@angular+core@20.3.5_@angular+compiler@20.3.5_rxjs@7.8.2_zone.js@0.15.1__rxjs@7.8.2/node_modules/@angular/common/locales/es.js",
+      "file": "@angular_common_locales_es.js",
+      "fileHash": "52a387d6",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/.pnpm/@angular+core@20.3.5_@angular+compiler@20.3.5_rxjs@7.8.2_zone.js@0.15.1/node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "b6961dd2",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/.pnpm/@angular+forms@20.3.5_@angular+common@20.3.5_@angular+core@20.3.5_@angular+compiler@20._3f5deb66ee25effccd0d7afa29e38d1e/node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "0e3ab0aa",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/.pnpm/@angular+platform-browser@20.3.5_@angular+common@20.3.5_@angular+core@20.3.5_@angular+c_55dd270a754e2a7df0f3871acc551758/node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "cff8f05d",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../node_modules/.pnpm/@angular+router@20.3.5_@angular+common@20.3.5_@angular+core@20.3.5_@angular+compiler@20_424f2674ea2e186240b7d5e84217d0df/node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "2f4e7c72",
+      "needsInterop": false
+    },
+    "@stomp/stompjs": {
+      "src": "../../../../../../node_modules/.pnpm/@stomp+stompjs@7.2.1/node_modules/@stomp/stompjs/esm6/index.js",
+      "file": "@stomp_stompjs.js",
+      "fileHash": "fcb38283",
+      "needsInterop": false
+    },
+    "angular-calendar": {
+      "src": "../../../../../../node_modules/.pnpm/angular-calendar@0.32.0_@angular+core@20.3.5_@angular+compiler@20.3.5_rxjs@7.8.2_zone.j_e32436efe93554fbc8a285c4d54998f6/node_modules/angular-calendar/fesm2022/angular-calendar.mjs",
+      "file": "angular-calendar.js",
+      "fileHash": "e24f91a1",
+      "needsInterop": false
+    },
+    "angular-calendar/date-adapters/date-fns": {
+      "src": "../../../../../../node_modules/.pnpm/angular-calendar@0.32.0_@angular+core@20.3.5_@angular+compiler@20.3.5_rxjs@7.8.2_zone.j_e32436efe93554fbc8a285c4d54998f6/node_modules/angular-calendar/date-adapters/esm/date-fns/index.js",
+      "file": "angular-calendar_date-adapters_date-fns.js",
+      "fileHash": "69c5fe1c",
+      "needsInterop": false
+    },
+    "angular-draggable-droppable": {
+      "src": "../../../../../../node_modules/.pnpm/angular-draggable-droppable@9.0.1_@angular+core@20.3.5_@angular+compiler@20.3.5_rxjs@7.8.2_zone.js@0.15.1_/node_modules/angular-draggable-droppable/fesm2022/angular-draggable-droppable.mjs",
+      "file": "angular-draggable-droppable.js",
+      "fileHash": "92bf088f",
+      "needsInterop": false
+    },
+    "angular-resizable-element": {
+      "src": "../../../../../../node_modules/.pnpm/angular-resizable-element@8.0.0_@angular+core@20.3.5_@angular+compiler@20.3.5_rxjs@7.8.2_zone.js@0.15.1_/node_modules/angular-resizable-element/fesm2022/angular-resizable-element.mjs",
+      "file": "angular-resizable-element.js",
+      "fileHash": "eb272339",
+      "needsInterop": false
+    },
+    "date-fns": {
+      "src": "../../../../../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/index.js",
+      "file": "date-fns.js",
+      "fileHash": "510abf5c",
+      "needsInterop": false
+    },
+    "mapbox-gl": {
+      "src": "../../../../../../node_modules/.pnpm/mapbox-gl@3.16.0/node_modules/mapbox-gl/dist/mapbox-gl.js",
+      "file": "mapbox-gl.js",
+      "fileHash": "8d417cdb",
+      "needsInterop": true
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/esm5/index.js",
+      "file": "rxjs.js",
+      "fileHash": "6197ac8e",
+      "needsInterop": false
+    },
+    "sockjs-client": {
+      "src": "../../../../../../node_modules/.pnpm/sockjs-client@1.6.1/node_modules/sockjs-client/lib/entry.js",
+      "file": "sockjs-client.js",
+      "fileHash": "7d386d5c",
+      "needsInterop": true
+    },
+    "sweetalert2": {
+      "src": "../../../../../../node_modules/.pnpm/sweetalert2@11.26.3/node_modules/sweetalert2/dist/sweetalert2.esm.all.js",
+      "file": "sweetalert2.js",
+      "fileHash": "dfbbada9",
+      "needsInterop": false
+    },
+    "zone.js": {
+      "src": "../../../../../../node_modules/.pnpm/zone.js@0.15.1/node_modules/zone.js/fesm2015/zone.js",
+      "file": "zone__js.js",
+      "fileHash": "7427ed15",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-NL7H6VDX": {
+      "file": "chunk-NL7H6VDX.js"
+    },
+    "chunk-JFP7NXQX": {
+      "file": "chunk-JFP7NXQX.js"
+    },
+    "chunk-PCDDX53E": {
+      "file": "chunk-PCDDX53E.js"
+    },
+    "chunk-XXHYL7NN": {
+      "file": "chunk-XXHYL7NN.js"
+    },
+    "chunk-6ITO44TG": {
+      "file": "chunk-6ITO44TG.js"
+    },
+    "chunk-7T4NGYKG": {
+      "file": "chunk-7T4NGYKG.js"
+    },
+    "chunk-LTDZUQ43": {
+      "file": "chunk-LTDZUQ43.js"
+    },
+    "chunk-Q2IM4WOY": {
+      "file": "chunk-Q2IM4WOY.js"
+    },
+    "chunk-3NTDFDXB": {
+      "file": "chunk-3NTDFDXB.js"
+    },
+    "chunk-3OV72XIM": {
+      "file": "chunk-3OV72XIM.js"
+    }
+  }
+}

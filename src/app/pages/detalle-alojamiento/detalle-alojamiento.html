@@ -1,0 +1,374 @@
+<!-- ==================== ESTADO DE CARGA ==================== -->
+@if (cargando) {
+  <main class="container details-page-container">
+    <div class="loading-container" style="text-align: center; padding: 4rem 2rem;">
+      <div class="loading-spinner-large"></div>
+      <p style="color: var(--text-color); font-size: 1.1rem; margin-top: 1rem;">
+        Cargando información del alojamiento...
+      </p>
+    </div>
+  </main>
+}
+
+<!-- ==================== ERROR DE CARGA ==================== -->
+@if (errorCarga && !cargando) {
+  <main class="container details-page-container">
+    <div class="empty-state">
+      <i class="fa-solid fa-exclamation-triangle" style="color: var(--danger-color);"></i>
+      <h3>No se pudo cargar el alojamiento</h3>
+      <p>Por favor, verifica tu conexión e intenta de nuevo.</p>
+      <button type="button" (click)="volver()" class="btn btn-primary">
+        <i class="fa-solid fa-arrow-left"></i> Volver
+      </button>
+    </div>
+  </main>
+}
+
+<!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+@if (alojamiento && !cargando) {
+  <main class="container details-page-container">
+
+    <!-- Sección de Título -->
+    <section class="title-section">
+      <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+        <div>
+          <h1>{{ alojamiento.titulo }}</h1>
+          <div class="title-meta">
+            @if (metricas) {
+              <span class="rating">
+                <i class="fa-solid fa-star"></i>
+                {{ metricas.promedioCalificaciones.toFixed(2) }}
+                ({{ metricas.totalResenas }} reseñas)
+              </span>
+            }
+            <span class="location">
+              <i class="fa-solid fa-location-dot"></i>
+              {{ alojamiento.direccion.ciudad }}, {{ alojamiento.direccion.direccion }}
+            </span>
+          </div>
+        </div>
+        <button type="button" (click)="volver()" class="btn btn-secondary">
+          <i class="fa-solid fa-arrow-left"></i> Volver
+        </button>
+      </div>
+    </section>
+
+    <!-- Galería de Imágenes -->
+    <section class="image-gallery">
+      <div class="main-image">
+        <img [src]="imagenPrincipal" [alt]="alojamiento.titulo">
+      </div>
+      <div class="thumbnail-images">
+        @for (imagen of imagenesGaleria; track imagen) {
+          <img
+            [src]="imagen"
+            [alt]="'Vista ' + ($index + 1) + ' de ' + alojamiento.titulo"
+            (click)="cambiarImagenPrincipal(imagen)"
+            style="cursor: pointer;">
+        }
+      </div>
+    </section>
+
+    <!-- Layout de Detalles y Widget de Reserva -->
+    <div class="details-layout">
+
+      <!-- Detalles Principales -->
+      <section class="main-details">
+
+        <!-- Encabezado con Anfitrión -->
+        <div class="details-header">
+          <div>
+            <h2>{{ alojamiento.titulo }}</h2>
+            <p style="color: #7F8C8D; margin-top: 0.5rem;">
+              <i class="fa-solid fa-users"></i> Hasta {{ alojamiento.maxHuespedes }} huéspedes
+            </p>
+          </div>
+          <div class="host-info" style="text-align: center;">
+            <img
+              [src]= "anfitiron?.foto || 'https://placehold.co/150x150/2e8b57/fff?text=' + obtenerIniciales()"
+              [alt]="'Avatar de ' + alojamiento.nombreAnfitrion"
+              class="host-avatar">
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-color);">
+              <i class="fa-solid fa-user"></i>
+              <strong>
+              <a
+                [routerLink]="['/chat']"
+                [queryParams]="{destinatarioId: alojamiento.anfitrionId}"
+                class="enlace-mensaje-huesped"
+                title="Enviar mensaje a {{ alojamiento.nombreAnfitrion }}">
+                {{ alojamiento.nombreAnfitrion }}
+                <i class="fa-solid fa-comment"></i>
+              </a>
+              </strong>
+            </p>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Descripción -->
+        <div class="description-section">
+          <h3>Acerca de este lugar</h3>
+          <p>{{ alojamiento.descripcion }}</p>
+        </div>
+
+        <hr>
+
+        <!-- Servicios -->
+        <div class="amenities-section">
+          <h3>Servicios destacados</h3>
+          <ul class="amenities-list">
+            @for (servicio of alojamiento.servicios; track servicio) {
+              <li>
+                @switch (servicio) {
+                  @case ('WIFI') {
+                    <i class="fa-solid fa-wifi"></i> Wi-Fi
+                  }
+                  @case ('PISCINA') {
+                    <i class="fa-solid fa-person-swimming"></i> Piscina
+                  }
+                  @case ('DESAYUNO') {
+                    <i class="fa-solid fa-mug-hot"></i> Desayuno incluido
+                  }
+                  @case ('AIRE_ACONDICIONADO') {
+                    <i class="fa-solid fa-snowflake"></i> Aire acondicionado
+                  }
+                  @case ('ESTACIONAMIENTO') {
+                    <i class="fa-solid fa-car"></i> Estacionamiento
+                  }
+                  @default {
+                    <i class="fa-solid fa-check"></i> {{ servicio }}
+                  }
+                }
+              </li>
+            }
+          </ul>
+        </div>
+
+        <hr>
+
+        <!-- Sección del mapa -->
+        <div class="amenities-section">
+          <h3>Localización</h3>
+          <div
+            id="map"
+            style="width: 100%; height: 400px; border-radius: 16px; overflow: hidden; border: 2px solid var(--border-color);">
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Sección del calendario -->
+        <div class="amenities-section">
+          <h3>Calendario</h3>
+          <div class="calendar-header-new">
+            <div class="header-left">
+              <button type="button" class="btn btn-secondary" (click)="mesAnterior()" [disabled]="mesActual">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="hoy()">
+                Hoy
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="mesSiguiente()">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+            <div class="header-title">
+              <h2>{{ viewDate | date:'MMMM yyyy' | titlecase }}</h2>
+            </div>
+          </div>
+
+          <div class="calendar-container-lib">
+            <mwl-calendar-month-view
+              [viewDate]="viewDate"
+              [events]="events"
+              [locale]="locale"
+              [weekStartsOn]="1"
+              (dayClicked)="seleccionarDiaCalendario($event.day)"></mwl-calendar-month-view>
+          </div>
+        </div>
+
+        <hr>
+        <!-- Sección de Reseñas -->
+        <div class="reviews-section">
+          <h3>
+            <i class="fa-solid fa-star"></i>
+            @if (metricas) {
+              {{ metricas.promedioCalificaciones.toFixed(2) }}
+              ({{ metricas.totalResenas }} reseñas)
+            }
+          </h3>
+
+          @if (resenas.length > 0) {
+            <div class="reviews-grid">
+              @for (resena of resenas; track resena.id) {
+                <div class="review-card">
+                  <div class="review-author">
+                    <img
+                      [src]="resena.usuario.foto || 'https://placehold.co/40x40/3f51b5/fff?text=' + resena.usuario.nombre.charAt(0)"
+                      [alt]="'Avatar de ' + resena.usuario.nombre">
+                    <div>
+                      <strong>{{ resena.usuario.nombre }}</strong>
+                      <span>{{ formatearFechaCorta(resena.creadoEn) }}</span>
+                    </div>
+                  </div>
+
+                  <div style="margin: 0.5rem 0;">
+                    @for (star of alojamientoService.generarEstrellas(resena.calificacion); track $index) {
+                      <i class="fa-solid fa-star" style="color: #F39C12; font-size: 0.9rem;"></i>
+                    }
+                  </div>
+
+                  <p>{{ resena.comentario }}</p>
+
+                  <!-- [NUEVO] Mostrar respuesta del anfitrión si existe -->
+                  @if (resena.respuesta) {
+                    <div class="host-response">
+                      <div class="host-response-header">
+                        <i class="fa-solid fa-reply"></i>
+                        <strong>Respuesta del anfitrión</strong>
+                      </div>
+                      <p class="host-response-message">{{ resena.respuesta.mensaje }}</p>
+                      <p class="host-response-date">
+                        {{ formatearFechaCorta(resena.respuesta.respondidoEn) }}
+                      </p>
+                    </div>
+                  }
+
+                  <!-- [NUEVO] Botón para responder (solo si es anfitrión propietario y no hay respuesta) -->
+                  @if (esAnfitrionPropietario && !resena.respuesta && tokenService.isLogged() ) {
+                    <div style="margin-top: 1rem;">
+                      <button
+                        type="button"
+                        (click)="responderResena(resena)"
+                        class="btn btn-secondary btn-small">
+                        <i class="fa-solid fa-reply"></i> Responder
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            @if (hayMasResenas) {
+              <div style="text-align: center; margin-top: 2rem;">
+                <button
+                  type="button"
+                  (click)="cargarMasResenas()"
+                  [disabled]="cargandoResenas"
+                  class="btn btn-secondary">
+                  @if (cargandoResenas) {
+                    <span class="loading-spinner"></span> Cargando...
+                  } @else {
+                    <i class="fa-solid fa-arrow-down"></i> Ver más reseñas
+                  }
+                </button>
+              </div>
+            }
+          } @else {
+            <p style="text-align: center; color: #7F8C8D; padding: 2rem;">
+              Aún no hay reseñas para este alojamiento. ¡Sé el primero en dejar una!
+            </p>
+          }
+        </div>
+      </section>
+
+      <!-- Widget de Reserva (Sticky) -->
+      <aside class="booking-widget">
+        <div class="booking-price">
+          <strong>{{ alojamientoService.formatearPrecio(alojamiento.precioPorNoche) }}</strong> / noche
+        </div>
+
+        <form [formGroup]="reservaForm" (ngSubmit)="realizarReserva()" class="booking-form">
+
+          <div class="form-group">
+            <label for="fechaEntrada">Check-in *</label>
+            <input
+              type="date"
+              id="fechaEntrada"
+              formControlName="fechaEntrada"
+              [min]="formUtilsService.obtenerFechaHoy()"
+              [class.error]="formUtilsService.campoInvalido(reservaForm, 'fechaEntrada')">
+
+            @if (formUtilsService.campoInvalido(reservaForm, 'fechaEntrada')) {
+              <div class="error-message show">
+                {{ formUtilsService.obtenerErrorCampo(reservaForm, 'fechaEntrada') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="fechaSalida">Check-out *</label>
+            <input
+              type="date"
+              id="fechaSalida"
+              formControlName="fechaSalida"
+              [min]="obtenerFechaMinimaSalida()"
+              [class.error]="formUtilsService.campoInvalido(reservaForm, 'fechaSalida')">
+
+            @if (formUtilsService.campoInvalido(reservaForm, 'fechaSalida')) {
+              <div class="error-message show">
+                {{ formUtilsService.obtenerErrorCampo(reservaForm, 'fechaSalida') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="huespedes">Número de huéspedes *</label>
+            <input
+              type="number"
+              id="huespedes"
+              formControlName="cantidadHuespedes"
+              [max]="alojamiento.maxHuespedes"
+              min="1"
+              placeholder="Cantidad de huéspedes"
+              [class.error]="formUtilsService.campoInvalido(reservaForm, 'cantidadHuespedes')">
+
+            <p style="font-size: 0.85rem; color: #7F8C8D; margin-top: 0.5rem;">
+              Máximo {{ alojamiento.maxHuespedes }} huéspedes
+            </p>
+
+            @if (formUtilsService.campoInvalido(reservaForm, 'cantidadHuespedes')) {
+              <div class="error-message show">
+                {{ formUtilsService.obtenerErrorCampo(reservaForm, 'cantidadHuespedes') }}
+              </div>
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-block"
+            [disabled]="reservaForm.invalid">
+            <i class="fa-solid fa-calendar-check"></i> Reservar ahora
+          </button>
+        </form>
+
+        <!-- Desglose de Precio -->
+        <div class="price-breakdown">
+          <p style="text-align: center; color: #7F8C8D; margin-bottom: 1.5rem; font-size: 0.9rem;">
+            <i class="fa-solid fa-info-circle"></i> No se te cobrará nada aún
+          </p>
+
+          @if (numeroNoches > 0) {
+            <ul>
+              <li>
+                <span>{{ alojamientoService.formatearPrecio(alojamiento.precioPorNoche) }} x {{ numeroNoches }} noche{{ numeroNoches > 1 ? 's' : '' }}</span>
+                <span>{{ alojamientoService.formatearPrecio(alojamiento.precioPorNoche * numeroNoches) }}</span>
+              </li>
+              <li>
+                <span>Tarifa de servicio</span>
+                <span>{{ alojamientoService.formatearPrecio(tarifaServicio) }}</span>
+              </li>
+            </ul>
+            <hr>
+            <p class="total-price">
+              <span><strong>Total</strong></span>
+              <span><strong>{{ alojamientoService.formatearPrecio(precioTotal) }}</strong></span>
+            </p>
+          }
+        </div>
+      </aside>
+
+    </div>
+  </main>
+}

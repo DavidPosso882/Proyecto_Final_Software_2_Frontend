@@ -1,0 +1,487 @@
+<main class="container dashboard-container">
+  <div class="dashboard-layout">
+
+    <app-panel-usuario></app-panel-usuario>
+
+    <section class="dashboard-content">
+
+      <div class="content-header">
+        <div>
+          <h1>Editar Mi Perfil</h1>
+          <p style="color: #7F8C8D; margin-top: 0.5rem;">Actualiza tu información personal y preferencias</p>
+        </div>
+      </div>
+
+      @if (cargandoUsuario) {
+        <div class="loading-container" style="text-align: center; padding: 4rem 2rem;">
+          <div class="loading-spinner-large"></div>
+          <p style="color: var(--text-color); font-size: 1.1rem; margin-top: 1rem;">
+            Cargando información...
+          </p>
+        </div>
+      }
+
+      @if (!cargandoUsuario && usuario) {
+
+        <div class="tabs">
+          <button
+            class="tab-link"
+            [class.active]="tabActiva === 'personal'"
+            (click)="cambiarTab('personal')">
+            <i class="fa-solid fa-user"></i> Información Personal
+          </button>
+
+          <button
+            class="tab-link"
+            [class.active]="tabActiva === 'seguridad'"
+            (click)="cambiarTab('seguridad')">
+            <i class="fa-solid fa-shield-halved"></i> Seguridad
+          </button>
+
+          <button
+            class="tab-link"
+            [class.active]="tabActiva === 'anfitrion'"
+            (click)="cambiarTab('anfitrion')">
+            @if (usuario.esAnfitrion) {
+              <i class="fa-solid fa-star"></i> Información Anfitrión
+            } @else {
+              <i class="fa-solid fa-house-user"></i> Convertirse en Anfitrión
+            }
+          </button>
+        </div>
+
+        @if (tabActiva === 'personal') {
+          <div class="tab-content active">
+            <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+              <div class="form-grid">
+
+                <div class="form-group full-width" style="text-align: center; margin-bottom: 2rem;">
+                  <label>Foto de Perfil</label>
+                  <div class="profile-image-container">
+                    <div class="current-image">
+
+                      @if (subiendoImagen) {
+                        <div class="loading-spinner-large"></div>
+                        <p style="margin-top: 1rem; color: var(--text-color);">Subiendo imagen...</p>
+                      } @else {
+                        <img
+                          [src]="fotoPreview || 'https://placehold.co/150x150/2e8b57/fff?text=' + obtenerIniciales()"
+                          [alt]="'Foto de ' + usuario.nombre"
+                          class="profile-preview">
+
+                        <button
+                          type="button"
+                          class="btn-icon-camera"
+                          (click)="fileInput.click()"
+                          [disabled]="subiendoImagen">
+                          <i class="fa-solid fa-camera"></i>
+                        </button>
+                      }
+                    </div>
+
+                    <input
+                      #fileInput
+                      type="file"
+                      accept="image/*"
+                      (change)="seleccionarImagen($event)"
+                      style="display: none;">
+
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      (click)="fileInput.click()"
+                      [disabled]="subiendoImagen"
+                      style="margin-top: 1rem;">
+                      <i class="fa-solid fa-upload"></i> Cambiar Foto
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label for="nombre">Nombre Completo *</label>
+                  <input
+                    type="text"
+                    id="nombre"
+                    formControlName="nombre"
+                    placeholder="Tu nombre completo"
+                    [class.error]="formUtilsService.campoInvalido(perfilForm, 'nombre')">
+
+                  @if (formUtilsService.campoInvalido(perfilForm, 'nombre')) {
+                    <div class="error-message show">
+                      {{ formUtilsService.obtenerErrorCampo(perfilForm, 'nombre') }}
+                    </div>
+                  }
+                </div>
+
+                <div class="form-group full-width">
+                  <label for="email">Correo Electrónico</label>
+                  <input
+                    type="email"
+                    id="email"
+                    [value]="usuario.email"
+                    disabled
+                    style="background-color: var(--light-green); cursor: not-allowed;">
+                  <small style="color: #7F8C8D; font-size: 0.85rem; margin-top: 0.5rem; display: block;">
+                    <i class="fa-solid fa-info-circle"></i> El email no se puede cambiar. Contacta soporte si necesitas modificarlo.
+                  </small>
+                </div>
+
+                <div class="form-group">
+                  <label for="telefono">Teléfono *</label>
+                  <input
+                    type="tel"
+                    id="telefono"
+                    formControlName="telefono"
+                    placeholder="300 123 4567"
+                    maxlength="10"
+                    [class.error]="formUtilsService.campoInvalido(perfilForm, 'telefono')">
+
+                  @if (formUtilsService.campoInvalido(perfilForm, 'telefono')) {
+                    <div class="error-message show">
+                      {{ formUtilsService.obtenerErrorCampo(perfilForm, 'telefono') }}
+                    </div>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label for="fechaNacimiento">Fecha de Nacimiento *</label>
+                  <input
+                    type="date"
+                    id="fechaNacimiento"
+                    formControlName="fechaNacimiento"
+                    autocomplete="bday"
+                    [max]="formUtilsService.obtenerFechaMaxima()"
+                    [min]="formUtilsService.obtenerFechaMinima()"
+                    [class.error]="formUtilsService.campoInvalido(perfilForm,'fechaNacimiento')">
+
+                  @if (formUtilsService.campoInvalido(perfilForm, 'fechaNacimiento')) {
+                    <div class="error-message show">
+                      {{ formUtilsService.obtenerErrorCampo(perfilForm, 'fechaNacimiento') }}
+                    </div>
+                  }
+                </div>
+
+                <div class="form-group full-width">
+                  <label>Tipo de Cuenta</label>
+                  <div style="padding: 1rem; background-color: var(--light-green); border-radius: 12px;">
+                    <p style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                      @if (usuario.esAnfitrion) {
+                        <i class="fa-solid fa-star" style="color: var(--primary-color);"></i>
+                        <strong>Anfitrión</strong> - Puedes publicar alojamientos
+                      } @else {
+                        <i class="fa-solid fa-user" style="color: var(--primary-color);"></i>
+                        <strong>Huésped</strong> - Puedes reservar alojamientos
+                      }
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="form-navigation" style="justify-content: flex-end; border-top: 2px solid var(--light-green); padding-top: 2rem; margin-top: 2rem;">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="cargando || perfilForm.invalid">
+
+                  @if (cargando) {
+                    <span class="loading-spinner"></span>
+                    Guardando...
+                  } @else {
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar Cambios
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+        @if (tabActiva === 'seguridad') {
+          <div class="tab-content active">
+            <form [formGroup]="seguridadForm" (ngSubmit)="cambiarContrasena()">
+              <div class="form-grid">
+
+                <div class="form-group full-width">
+                  <h3 style="color: var(--dark-green); margin-bottom: 1.5rem;">
+                    <i class="fa-solid fa-key"></i> Cambiar Contraseña
+                  </h3>
+                </div>
+
+                <div class="form-group full-width">
+                  <label for="contrasenaActual">Contraseña Actual *</label>
+                  <div class="password-input-container">
+                    <input
+                      [type]="mostrarContrasenaActual ? 'text' : 'password'"
+                      id="contrasenaActual"
+                      formControlName="contrasenaActual"
+                      placeholder="Tu contraseña actual"
+                      [class.error]="formUtilsService.campoInvalido(seguridadForm, 'contrasenaActual')">
+
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      (click)="toggleContrasena('actual')">
+                      <i [class]="mostrarContrasenaActual ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                    </button>
+                  </div>
+
+                  @if (formUtilsService.campoInvalido(seguridadForm, 'contrasenaActual')) {
+                    <div class="error-message show">
+                      {{ formUtilsService.obtenerErrorCampo(seguridadForm, 'contrasenaActual') }}
+                    </div>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label for="contrasenaNueva">Nueva Contraseña *</label>
+                  <div class="password-input-container">
+                    <input
+                      [type]="mostrarNuevaContrasena ? 'text' : 'password'"
+                      id="contrasenaNueva"
+                      formControlName="contrasenaNueva"
+                      placeholder="Tu nueva contraseña"
+                      [class.error]="formUtilsService.campoInvalido(seguridadForm, 'contrasenaNueva')">
+
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      (click)="toggleContrasena('nueva')">
+                      <i [class]="mostrarNuevaContrasena ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                    </button>
+                  </div>
+
+                  <div class="password-requirements">
+                    <p><i class="fa-solid fa-info-circle"></i> Debe contener al menos:</p>
+                    <ul>
+                      <li [class.valid]="validacionContrasena.tieneLongitud">
+                        @if (validacionContrasena.tieneLongitud) {
+                          <i class="fa-solid fa-check"></i>
+                        }
+                        8 caracteres
+                      </li>
+                      <li [class.valid]="validacionContrasena.tieneMayuscula">
+                        @if (validacionContrasena.tieneMayuscula) {
+                          <i class="fa-solid fa-check"></i>
+                        }
+                        1 letra mayúscula
+                      </li>
+                      <li [class.valid]="validacionContrasena.tieneNumero">
+                        @if (validacionContrasena.tieneNumero) {
+                          <i class="fa-solid fa-check"></i>
+                        }
+                        1 número
+                      </li>
+                    </ul>
+                  </div>
+
+                  @if (formUtilsService.campoInvalido(seguridadForm, 'contrasenaNueva')) {
+                    <div class="error-message show">
+                      {{ formUtilsService.obtenerErrorCampo(seguridadForm, 'contrasenaNueva') }}
+                    </div>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label for="confirmarContrasena">Confirmar Nueva Contraseña *</label>
+                  <div class="password-input-container">
+                    <input
+                      [type]="mostrarConfirmarContrasena ? 'text' : 'password'"
+                      id="confirmarContrasena"
+                      formControlName="confirmarContrasena"
+                      placeholder="Repite tu nueva contraseña"
+                      [class.error]="formUtilsService.formularioTieneError(seguridadForm, 'contrasenasNoCoinciden') && seguridadForm.get('confirmarContrasena')?.touched">
+
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      (click)="toggleContrasena('confirmar')">
+                      <i [class]="mostrarConfirmarContrasena ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                    </button>
+                  </div>
+
+                  @if (formUtilsService.formularioTieneError(seguridadForm, 'contrasenasNoCoinciden') && seguridadForm.get('confirmarContrasena')?.touched) {
+                    <div class="error-message show">
+                      Las contraseñas no coinciden
+                    </div>
+                  }
+                </div>
+
+                <div class="form-group full-width">
+                  <div class="danger-zone">
+                    <h3>
+                      <i class="fa-solid fa-triangle-exclamation"></i> Zona de Peligro
+                    </h3>
+                    <p>
+                      Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor asegúrate.
+                    </p>
+                    <button
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="confirmarEliminarCuenta()">
+                      <i class="fa-solid fa-trash"></i> Eliminar mi cuenta
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="form-navigation" style="justify-content: flex-end; border-top: 2px solid var(--light-green); padding-top: 2rem; margin-top: 2rem;">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="cargando || seguridadForm.invalid">
+
+                  @if (cargando) {
+                    <span class="loading-spinner"></span>
+                    Actualizando...
+                  } @else {
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Actualizar Seguridad
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+        @if (tabActiva === 'anfitrion') {
+          <div class="tab-content active">
+
+            @if (usuario.esAnfitrion) {
+
+              @if (cargandoAnfitrion) {
+                <div class="loading-container" style="text-align: center; padding: 4rem 2rem;">
+                  <div class="loading-spinner-large"></div>
+                  <p style="color: var(--text-color); font-size: 1.1rem; margin-top: 1rem;">
+                    Cargando información de anfitrión...
+                  </p>
+                </div>
+              }
+
+              @if (!cargandoAnfitrion && anfitrionInfo) {
+                <div class="form-grid">
+                  <div class="form-group full-width">
+                    <h3 style="color: var(--dark-green); margin-bottom: 1.5rem;">
+                      <i class="fa-solid fa-star" style="color: var(--primary-color);"></i> Perfil de Anfitrión
+                    </h3>
+                    <p>Esta es la información que ven los huéspedes sobre ti.</p>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label>Sobre Mí</label>
+                    <textarea rows="6" [value]="anfitrionInfo.sobreMi" disabled style="background-color: var(--light-green); cursor: not-allowed;"></textarea>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label>Documento Legal Registrado</label>
+                    @if (anfitrionInfo.documentoLegal) {
+                    <div style="padding: 1rem; background: var(--light-green); border-radius: 12px; display: flex; align-items: center; gap: 10px;">
+                      <i class="fa-solid fa-file-pdf" style="color: var(--primary-color);"></i>
+                      <strong>Documento Verificado</strong>
+                    </div>
+                  } @else {
+                    <p style="color: var(--text-color); margin-top: 0.5rem;">
+                      No se encontró ningún documento verificado.
+                    </p>
+                  }
+                  </div>
+                </div>
+              } @else if (!cargandoAnfitrion && !anfitrionInfo) {
+                <p>No se pudo cargar la información de anfitrión.</p>
+              }
+            }
+
+            @else {
+              <form [formGroup]="anfitrionForm" (ngSubmit)="convertirseEnAnfitrion()">
+                <div class="form-grid">
+
+                  <div class="form-group full-width">
+                    <h3 style="color: var(--dark-green); margin-bottom: 1.5rem;">
+                      <i class="fa-solid fa-house-user"></i> Conviértete en Anfitrión
+                    </h3>
+                    <p>Completa tu perfil para empezar a publicar tus alojamientos. Deberás proporcionar una breve descripción sobre ti y un documento legal (PDF) para verificación.</p>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="sobreMi">Sobre Mí *</label>
+                    <textarea
+                      id="sobreMi"
+                      formControlName="sobreMi"
+                      rows="6"
+                      placeholder="Cuéntales a los huéspedes un poco sobre ti, tus hobbies, por qué te gusta ser anfitrión, etc. (Mínimo 50 caracteres)"
+                      [class.error]="formUtilsService.campoInvalido(anfitrionForm, 'sobreMi')">
+                    </textarea>
+                    @if (formUtilsService.campoInvalido(anfitrionForm, 'sobreMi')) {
+                      <div class="error-message show">
+                        {{ formUtilsService.obtenerErrorCampo(anfitrionForm, 'sobreMi') }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="documentoLegal">Documento Legal (PDF) *</label>
+                    <p style="color: #7F8C8D; font-size: 0.85rem; margin-top: 0; margin-bottom: 1rem;">
+                      Necesitamos un documento (Ej: RUT, Cédula) para verificar tu identidad. Máx 5MB.
+                    </p>
+
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      (click)="docInput.click()"
+                      [disabled]="subiendoDocumento">
+                      @if (subiendoDocumento) {
+                        <span class="loading-spinner"></span> Subiendo...
+                      } @else {
+                        <i class="fa-solid fa-upload"></i> Seleccionar Documento (PDF)
+                      }
+                    </button>
+
+                    <input
+                      #docInput
+                      type="file"
+                      accept="application/pdf"
+                      (change)="seleccionarDocumento($event)"
+                      style="display: none;">
+
+                    @if (nombreDocumentoSubido && !subiendoDocumento && !formUtilsService.campoInvalido(anfitrionForm, 'documentoLegal')) {
+                      <div style="margin-top: 1rem; color: var(--success-color); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-check-circle"></i> {{ nombreDocumentoSubido }} cargado exitosamente.
+                      </div>
+                    }
+
+                    <input type="hidden" formControlName="documentoLegal">
+
+                    @if (formUtilsService.campoInvalido(anfitrionForm, 'documentoLegal')) {
+                      <div class="error-message show">
+                        {{ formUtilsService.obtenerErrorCampo(anfitrionForm, 'documentoLegal') }}
+                      </div>
+                    }
+                  </div>
+
+                </div>
+
+                <div class="form-navigation" style="justify-content: flex-end; border-top: 2px solid var(--light-green); padding-top: 2rem; margin-top: 2rem;">
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="cargando || anfitrionForm.invalid || subiendoDocumento">
+
+                    @if (cargando) {
+                      <span class="loading-spinner"></span>
+                      Enviando Solicitud...
+                    } @else {
+                      <i class="fa-solid fa-paper-plane"></i>
+                      Enviar Solicitud
+                    }
+                  </button>
+                </div>
+              </form>
+            }
+          </div>
+        }
+
+      }
+    </section>
+  </div>
+</main>

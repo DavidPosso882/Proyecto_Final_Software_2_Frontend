@@ -1,0 +1,107 @@
+<header class="main-header">
+  <div class="container header-content">
+    <!-- Logo -->
+    <a routerLink="/" class="logo">
+      <div class="logo-icon">
+        <i class="fa-solid fa-house-chimney logo-house"></i>
+      </div>
+      <span class="logo-text">CloudHouse</span>
+    </a>
+
+    <!-- Navegación -->
+    <nav class="main-nav">
+      <ul>
+        <!-- ==================== USUARIO NO AUTENTICADO ==================== -->
+        @if (!estaAutenticado) {
+          <li><a routerLink="/login" class="nav-link">Conviértete en Anfitrión</a></li>
+          <li><a routerLink="/login" class="btn btn-secondary">Iniciar Sesión</a></li>
+          <li><a routerLink="/registro" class="btn btn-primary">Regístrate</a></li>
+        }
+
+        <!-- ==================== USUARIO AUTENTICADO ==================== -->
+        @if (estaAutenticado && usuario) {
+          <!-- Si es HUÉSPED (no anfitrión) -->
+          @if (!usuario.esAnfitrion) {
+            <li>
+              <a routerLink="/editar-perfil" class="nav-link">
+                <i class="fa-solid fa-star"></i> Conviértete en Anfitrión
+              </a>
+            </li>
+          }
+
+          <!-- Menú de usuario -->
+          <li class="user-menu-container">
+            <button
+              type="button"
+              class="user-menu"
+              (click)="toggleMenuUsuario()"
+              style="cursor: pointer; border: none;">
+
+              <i class="fa-solid fa-bars"></i>
+
+              @if (usuario.foto) {
+                <img [src]="usuario.foto" [alt]="'Avatar de ' + usuario.nombre">
+              } @else {
+                <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;">
+                  {{ obtenerIniciales() }}
+                </div>
+              }
+            </button>
+
+            <!-- Dropdown del menú -->
+            @if (mostrarMenuUsuario) {
+              <div class="user-dropdown">
+                <div class="user-dropdown-header">
+                  <strong>{{ usuario.nombre }}</strong>
+                  <span>{{ usuario.email }}</span>
+                </div>
+
+                <hr style="margin: 0.5rem 0; border-color: var(--light-green);">
+
+                <a routerLink="/mis-reservas" class="dropdown-item" (click)="cerrarMenuUsuario()">
+                  <i class="fa-solid fa-briefcase"></i> Mis Reservas
+                </a>
+
+                <a routerLink="/chat" class="dropdown-item" (click)="cerrarMenuUsuario()">
+                  <i class="fa-solid fa-message"></i> Chats
+                </a>
+
+                @if (usuario.esAnfitrion) {
+                  <a routerLink="/mis-alojamientos" class="dropdown-item" (click)="cerrarMenuUsuario()">
+                    <i class="fa-solid fa-house-user"></i> Mis Alojamientos
+                  </a>
+                  <a routerLink="/gestionar-reservas" class="dropdown-item" (click)="cerrarMenuUsuario()">
+                    <i class="fa-solid fa-clipboard-check"></i> Gestionar Reservas
+                  </a>
+                  <a routerLink="/crear-alojamiento" class="dropdown-item" (click)="cerrarMenuUsuario()">
+                    <i class="fa-solid fa-plus"></i> Crear Alojamiento
+                  </a>
+                  <a routerLink="/dashboard-anfitrion" class="dropdown-item" (click)="cerrarMenuUsuario()">
+                    <i class="fa-solid fa-dashboard"></i> Dashboard
+                  </a>
+                }
+
+                <a routerLink="/editar-perfil" class="dropdown-item" (click)="cerrarMenuUsuario()">
+                  <i class="fa-solid fa-user"></i> Mi Perfil
+                </a>
+
+                <hr style="margin: 0.5rem 0; border-color: var(--light-green);">
+
+                <a (click)="cerrarSesion()" class="dropdown-item" style="cursor: pointer; color: var(--danger-color);">
+                  <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                </a>
+              </div>
+            }
+          </li>
+        }
+
+        <!-- Estado de carga -->
+        @if (estaAutenticado && cargandoUsuario) {
+          <li>
+            <div class="loading-spinner-small" style="width: 24px; height: 24px; border-width: 2px;"></div>
+          </li>
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
